@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zarif Nur Aiman — Portfolio
 
-## Getting Started
+Personal site for **Zarif Nur Aiman Bin Khairul Bahri**, Graduate QA Engineer in Johor, Malaysia. Single page covering experience, selected work, skills, education, and contact, with a downloadable CV and a sample defect report.
 
-First, run the development server:
+**Open to QA and software quality roles.**  
+[LinkedIn](https://www.linkedin.com/in/zarif-nur-aiman) · [GitHub](https://github.com/aimanzarif) · [Email](mailto:aimanzarif1511@gmail.com)
+
+## Stack
+
+- [Next.js](https://nextjs.org/) 16 (App Router)
+- React 19, TypeScript, Tailwind CSS v4
+- Motion for interaction
+- Docker for production
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy and content live in `lib/profile.ts`. Static files (photo, CV, sample defect report) live in `public/`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Docker
 
-## Learn More
+```bash
+docker compose up --build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Then open [http://localhost:3000](http://localhost:3000).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+For a public URL (Open Graph / share card), rebuild with:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.com docker compose up --build -d
+```
 
-## Deploy on Vercel
+`NEXT_PUBLIC_SITE_URL` is baked in at **build** time. Changing the domain later requires a rebuild.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Local development |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint |
