@@ -1,5 +1,6 @@
 import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
+import { InPageNav } from "@/components/in-page-nav";
 import { PointerBackground } from "@/components/pointer-background";
 import {
   About,
@@ -15,6 +16,7 @@ export default function Home() {
   return (
     <>
       <PointerBackground />
+      <InPageNav />
       <div className="relative z-10">
         <a href="#about" className="skip-link">
           Skip to content

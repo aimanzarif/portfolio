@@ -177,6 +177,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
