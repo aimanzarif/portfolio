@@ -3,7 +3,7 @@
 Personal site for **Zarif Nur Aiman Bin Khairul Bahri**, Graduate QA Engineer in Johor, Malaysia. Single page covering experience, selected work, skills, education, and contact, with a downloadable CV and a sample defect report.
 
 **Open to QA and software quality roles.**  
-[LinkedIn](https://www.linkedin.com/in/zarif-nur-aiman) · [GitHub](https://github.com/aimanzarif) · [Email](mailto:aimanzarif1511@gmail.com)
+[LinkedIn](https://www.linkedin.com/in/zarif-nur-aiman) · [GitHub](https://github.com/aimanzarif) · [Email](mailto:zarif@zarep.my)
 
 ## Stack
 

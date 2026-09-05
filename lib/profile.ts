@@ -6,7 +6,7 @@ export const profile = {
   location: "Johor, Malaysia",
   phone: "+60 11-19167843",
   phoneHref: "tel:+601119167843",
-  email: "aimanzarif1511@gmail.com",
+  email: "zarif@zarep.my",
   linkedin: "https://www.linkedin.com/in/zarif-nur-aiman",
   linkedinLabel: "linkedin.com/in/zarif-nur-aiman",
   github: "https://github.com/aimanzarif",
