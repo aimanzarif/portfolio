@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
-import Script from "next/script";
 import { Figtree, Fraunces } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { profile } from "@/lib/profile";
@@ -67,10 +66,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         themeClassName(theme),
       )}
     >
+      <head>
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var tt=window.trustedTypes;if(!tt||!tt.createPolicy)return;try{tt.createPolicy("default",{createHTML:function(s){return s},createScript:function(s){return s},createScriptURL:function(s){return s}})}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="flex min-h-dvh flex-col overflow-x-clip font-sans">
-        <Script id="trusted-types-default" strategy="beforeInteractive" nonce={nonce}>
-          {`(function(){if(!window.trustedTypes||!trustedTypes.createPolicy)return;try{trustedTypes.createPolicy("default",{createHTML:function(s){return s},createScript:function(s){return s},createScriptURL:function(s){return s}})}catch(e){}})();`}
-        </Script>
         {children}
       </body>
     </html>

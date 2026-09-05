@@ -1,3 +1,4 @@
+import { CloudflareEmailOff } from "@/components/cloudflare-email-off";
 import { Shine } from "@/components/animate-ui/primitives/effects/shine";
 import { Reveal } from "@/components/reveal";
 import {
@@ -91,7 +92,9 @@ export function Contact() {
               Based in {profile.location}. Open to graduate QA roles with structured testing,
               documentation, and a path into Playwright.
             </p>
-            <ContactActions />
+            <CloudflareEmailOff>
+              <ContactActions />
+            </CloudflareEmailOff>
           </div>
         </Shine>
       </Reveal>
