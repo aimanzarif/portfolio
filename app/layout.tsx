@@ -6,7 +6,7 @@ import { profile } from "@/lib/profile";
 import { parseThemePreference, THEME_STORAGE_KEY, themeClassName } from "@/lib/theme";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://zarep.my";
 const title = `${profile.shortName} — ${profile.title}`;
 const description =
   "Portfolio of Zarif Nur Aiman Bin Khairul Bahri, a CPRE-certified Information Systems Engineering graduate and QA engineer based in Johor, Malaysia.";
