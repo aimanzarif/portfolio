@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import Script from "next/script";
 import { Figtree, Fraunces } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { profile } from "@/lib/profile";
@@ -53,6 +54,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const cookieStore = await cookies();
   const theme = parseThemePreference(cookieStore.get(THEME_STORAGE_KEY)?.value);
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <html
@@ -66,6 +68,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <body className="flex min-h-dvh flex-col overflow-x-clip font-sans">
+        <Script id="trusted-types-default" strategy="beforeInteractive" nonce={nonce}>
+          {`(function(){if(!window.trustedTypes||!trustedTypes.createPolicy)return;try{trustedTypes.createPolicy("default",{createHTML:function(s){return s},createScript:function(s){return s},createScriptURL:function(s){return s}})}catch(e){}})();`}
+        </Script>
         {children}
       </body>
     </html>
