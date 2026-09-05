@@ -9,20 +9,27 @@ export function proxy(request: NextRequest) {
     request.nextUrl.protocol === "https:" ||
     (process.env.NEXT_PUBLIC_SITE_URL ?? "https://zarep.my").startsWith("https://");
 
+  const cloudflareScriptSrc = [
+    "https://challenges.cloudflare.com",
+    "https://static.cloudflareinsights.com",
+    "https://ajax.cloudflare.com",
+  ].join(" ");
+
   const contentSecurityPolicy = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
+    `script-src 'self' 'nonce-${nonce}' ${cloudflareScriptSrc}${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' blob: data:",
+    "img-src 'self' blob: data: https://challenges.cloudflare.com",
     "font-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
-    "frame-src 'none'",
+    "frame-src 'self' https://challenges.cloudflare.com",
+    "connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com https://static.cloudflareinsights.com" +
+      (isDev ? " ws: wss:" : ""),
     "require-trusted-types-for 'script'",
     "trusted-types default 'allow-duplicates'",
-    ...(isDev ? ["connect-src 'self' ws: wss:"] : []),
     ...(!isDev && isHttps ? ["upgrade-insecure-requests"] : []),
   ].join("; ");
 
