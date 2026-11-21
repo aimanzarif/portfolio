@@ -319,6 +319,50 @@ body {
   animation: css-fade-up 0.6s ease-out 0.15s both;
 }
 
+/* voyager, the mascot */
+@keyframes voyager-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes voyager-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px) rotate(-3deg); }
+  40% { transform: translateX(3px) rotate(3deg); }
+  60% { transform: translateX(-2px) rotate(-2deg); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes voyager-key {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+@keyframes voyager-drop {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(7px); opacity: 0; }
+}
+
+@keyframes voyager-z {
+  0% { transform: translate(0, 2px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate(2px, -3px); opacity: 0; }
+}
+
+@keyframes voyager-pop {
+  from { transform: translateY(6px) scale(0.96); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.voyager-bob { animation: voyager-bob 3s ease-in-out infinite; }
+.voyager-bob-slow { animation: voyager-bob 6s ease-in-out infinite; }
+.voyager-shake { animation: voyager-shake 0.5s ease-in-out 2; }
+.voyager-key { animation: voyager-key 0.35s steps(2) infinite; }
+.voyager-drop { animation: voyager-drop 1.4s ease-in infinite; transform-box: fill-box; }
+.voyager-z { animation: voyager-z 2.4s ease-out infinite; transform-box: fill-box; }
+.voyager-pop { animation: voyager-pop 0.25s ease-out both; }
+
 @keyframes caret-blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -370,7 +414,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .led { animation: none; }
   .marquee-track { animation: none; }
-  .terminal-invite, .packet, .vent-bar, .css-rise, .css-wipe, .css-fade-up { animation: none !important; }
+  .terminal-invite, .packet, .vent-bar, .css-rise, .css-wipe, .css-fade-up,
+  .voyager-bob, .voyager-bob-slow, .voyager-shake, .voyager-key, .voyager-drop, .voyager-z, .voyager-pop { animation: none !important; }
   .packet { display: none; }
   .lift-card { transition: none; }
 

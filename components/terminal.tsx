@@ -5,6 +5,7 @@ import { useReducedMotion } from "motion/react";
 import { profile, projects } from "@/lib/profile";
 import type { StatusReport } from "@/lib/status";
 import { findEgg } from "@/lib/eggs";
+import { emitVoyager } from "@/lib/voyager-events";
 
 type Line = { id: number; kind: "cmd" | "out"; body: ReactNode };
 
@@ -307,6 +308,7 @@ export function Terminal() {
       return;
     }
     push("cmd", raw);
+    if (raw.trim()) emitVoyager({ type: "command", command: raw.trim().toLowerCase() });
     if (result === null) return;
     if (result instanceof Promise) {
       const id = push("out", "checking...");
@@ -401,7 +403,10 @@ export function Terminal() {
               ref={input}
               id="terminal-input"
               value={value}
-              onChange={(event) => setValue(event.target.value)}
+              onChange={(event) => {
+                setValue(event.target.value);
+                emitVoyager({ type: "typing" });
+              }}
               onKeyDown={onKeyDown}
               onFocus={() => setTouched(true)}
               autoComplete="off"

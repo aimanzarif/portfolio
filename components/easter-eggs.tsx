@@ -99,7 +99,7 @@ export function EasterEggs() {
             animate={{ opacity: 1, y: 0, rotate: 0 }}
             exit={{ opacity: 0, y: 12 }}
             transition={{ type: "spring", stiffness: 380, damping: 22 }}
-            className="fixed right-5 bottom-5 z-50 max-w-xs rounded-xl border-2 border-foreground bg-accent p-4 font-mono text-sm text-accent-foreground shadow-[6px_6px_0_var(--foreground)]"
+            className="fixed top-24 right-5 z-50 max-w-xs rounded-xl border-2 border-foreground bg-accent p-4 font-mono text-sm text-accent-foreground shadow-[6px_6px_0_var(--foreground)]"
           >
             <p className="font-bold">EASTER EGG {toast.count}/3</p>
             <p className="mt-1">{toast.message}</p>
