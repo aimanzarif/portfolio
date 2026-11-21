@@ -66,7 +66,7 @@ export function Header() {
         Skip to content
       </a>
       <Container>
-        <div className="grid grid-cols-[1fr_auto] items-center gap-4 py-4 lg:grid-cols-[1fr_auto_1fr]">
+        <div className="flex items-center gap-4 py-3.5">
           <div className="flex items-center gap-1">
             <button
               type="button"
@@ -90,7 +90,7 @@ export function Header() {
               />
             </a>
           </div>
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
+          <nav className="ml-auto hidden items-center gap-0.5 lg:flex" aria-label="Main">
             {navItems.map((item) => {
               const isActive = active === item.href.slice(1);
               return (
@@ -98,7 +98,7 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "true" : undefined}
-                  className={`relative rounded-full px-3 py-1.5 font-mono text-[14px] whitespace-nowrap transition-colors ${
+                  className={`relative rounded-full px-2.5 py-1.5 font-mono text-[14px] whitespace-nowrap transition-colors ${
                     isActive ? "text-accent-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -117,7 +117,7 @@ export function Header() {
               );
             })}
           </nav>
-          <div className="flex items-center justify-end gap-2">
+          <div className="ml-auto flex items-center gap-1.5 lg:ml-3">
             <KlangClock className="hidden xl:flex" compact />
             <ModeToggle mode="fun" className="hidden xl:flex" />
             <ThemeToggle />

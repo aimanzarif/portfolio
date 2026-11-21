@@ -6,7 +6,7 @@ import { profile, ticker } from "@/lib/profile";
 export function Hero() {
   return (
     <section id="top" className="relative">
-      <Container className="flex flex-wrap items-center gap-14 pt-28 pb-10 md:pt-36 md:pb-14">
+      <Container className="flex flex-wrap items-center gap-14 pt-24 pb-10 md:pt-28 md:pb-14">
         <div className="min-w-0 flex-[999_1_38rem]">
           {/* Hero motion is pure CSS so the text paints before JavaScript loads (faster LCP on phones). */}
           <div>
