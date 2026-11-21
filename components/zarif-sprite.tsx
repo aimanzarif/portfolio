@@ -1,34 +1,37 @@
 /*
- * Pixel Zarif, voyager's human. 16×25 art pixels, chibi proportions:
- * middle-part hair, round glasses, mature tan skin, sage baju Melayu (cekak musang collar, gold buttons),
+ * Pixel Zarif, voyager's human. 14×28 art pixels: a skinny guy, 170cm, big head because pixel art.
+ * Middle-part hair, glasses, mature tan skin, sage baju Melayu (cekak musang collar, gold buttons),
  * songket sampin, brown capal.
  */
 const ROWS = [
-  "....HHHHHHHH....",
-  "...HHHHHHHHHH...",
-  "..HHHHHHHHHHHH..",
-  "..HHHHHSSHHHHH..",
-  "..HHHHSSSSHHHH..",
-  "..HHHSSSSSSHHH..",
-  "..HHSSSSSSSSHH..",
-  "..HGGGGSSGGGGH..",
-  "..HGlEGGGGElGH..",
-  "..SGGGGSSGGGGS..",
-  "..SBSSSSSSSSBS..",
-  "...SSSMSSMSSS...",
-  "....sSSMMSSs....",
-  "....CCKSSKCC....",
-  "...CCCCKKCCCC...",
-  "..CCCCCCUCCCCC..",
-  ".SCCCCCCcCCCCCS.",
-  ".SCCCCCCUCCCCCS.",
-  "..WWWWWWWWWWWW..",
-  "..WwWWwWWwWWwW..",
-  "..WWWWWWWWWWWW..",
-  "...CCCCCCCCCC...",
-  "...CCCc..cCCC...",
-  "...FFF....FFF...",
-  "..PPPP....PPPP..",
+  "....HHHHHH....",
+  "...HHHHHHHH...",
+  "..HHHHSSHHHH..",
+  "..HHHSSSSHHH..",
+  "..HHSSSSSSHH..",
+  "..HGGGGGGGGH..",
+  "..SGlEGGElGS..",
+  "..SGGGSSGGGS..",
+  "..SBSSSSSSBS..",
+  "...SSMSSMSS...",
+  "....sSMMSs....",
+  ".....sSSs.....",
+  ".....KSSK.....",
+  "....CCKKCC....",
+  "...CCCUUCCC...",
+  "...CCCccCCC...",
+  "...CCCUUCCC...",
+  "...CCCccCCC...",
+  "...SWWWWWWS...",
+  "....WwWWwW....",
+  "....WWWWWW....",
+  "....CCCCCC....",
+  "....CC..CC....",
+  "....CC..CC....",
+  "....CC..CC....",
+  "....CC..CC....",
+  "....FF..FF....",
+  "...PPP..PPP...",
 ] as const;
 
 const COLORS: Record<string, string> = {
@@ -80,14 +83,14 @@ const SHUT = runs(true);
 
 export function ZarifSprite({ blink, worried, className }: { blink: boolean; worried: boolean; className?: string }) {
   return (
-    <svg viewBox="0 0 18 25" className={className} shapeRendering="crispEdges" aria-hidden>
+    <svg viewBox="0 0 14 28" className={className} shapeRendering="crispEdges" aria-hidden>
       {(blink ? SHUT : OPEN).map((r, i) => (
         <rect key={i} x={r.x} y={r.y} width={r.w} height={1} fill={r.color} />
       ))}
       {worried ? (
         <g className="voyager-drop">
-          <rect x="16" y="3" width="1" height="1" fill="#9db8f0" />
-          <rect x="16" y="4" width="2" height="2" fill="#9db8f0" />
+          <rect x="13" y="2" width="1" height="1" fill="#9db8f0" />
+          <rect x="12" y="3" width="2" height="2" fill="#9db8f0" />
         </g>
       ) : null}
     </svg>

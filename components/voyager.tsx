@@ -233,7 +233,7 @@ export function Voyager() {
               aria-hidden
               className={cn(
                 "absolute -bottom-[7px] size-3 rotate-45 border-r-2 border-b-2 border-foreground bg-card",
-                bubble.who === "voyager" ? "right-8" : "right-[4.6rem] sm:right-[6.9rem]",
+                bubble.who === "voyager" ? "right-8" : "right-[4.35rem] sm:right-[6.5rem]",
               )}
             />
           </p>
@@ -247,7 +247,7 @@ export function Voyager() {
         title="zarif"
         className="voyager-bob-alt pointer-events-auto rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent"
       >
-        <ZarifSprite blink={zarifBlink} worried={state === "degraded" || hot} className="h-auto w-[34px] overflow-visible sm:w-[52px]" />
+        <ZarifSprite blink={zarifBlink} worried={state === "degraded" || hot} className="h-auto w-[26px] overflow-visible sm:w-[40px]" />
       </button>
       <button
         type="button"
