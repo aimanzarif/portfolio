@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { cookies, headers } from "next/headers";
-import { Figtree, Fraunces } from "next/font/google";
+import { Bricolage_Grotesque, Figtree, JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { profile } from "@/lib/profile";
 import { parseThemePreference, THEME_STORAGE_KEY, themeClassName } from "@/lib/theme";
@@ -9,15 +9,20 @@ import "./globals.css";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://zarep.my";
 const title = `${profile.shortName} — ${profile.title}`;
 const description =
-  "Portfolio of Zarif Nur Aiman Bin Khairul Bahri, a CPRE-certified Information Systems Engineering graduate and QA engineer based in Johor, Malaysia.";
+  "Portfolio of Zarif Nur Aiman Bin Khairul Bahri: IT support, QA and full-stack delivery, plus a self-hosted RHEL homelab. Based in Klang, Malaysia.";
 
 const figtree = Figtree({
   variable: "--font-figtree",
   subsets: ["latin"],
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+});
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
 });
 
@@ -26,8 +31,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#dcd7c8" },
-    { media: "(prefers-color-scheme: dark)", color: "#2c3639" },
+    { media: "(prefers-color-scheme: light)", color: "#ece7db" },
+    { media: "(prefers-color-scheme: dark)", color: "#1c1f20" },
   ],
 };
 
@@ -61,7 +66,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={cn(
         figtree.variable,
-        fraunces.variable,
+        bricolage.variable,
+        jetbrains.variable,
         "h-full antialiased font-sans",
         themeClassName(theme),
       )}

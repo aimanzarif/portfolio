@@ -2,8 +2,8 @@ export const profile = {
   name: "Zarif Nur Aiman Bin Khairul Bahri",
   shortName: "Zarif Nur Aiman",
   firstName: "Zarif",
-  title: "Graduate QA Engineer",
-  location: "Johor, Malaysia",
+  title: "IT Support & QA",
+  location: "Klang, Malaysia",
   phone: "+60 11-19167843",
   phoneHref: "tel:+601119167843",
   email: "zarif@zarep.my",
@@ -13,7 +13,9 @@ export const profile = {
   githubLabel: "github.com/aimanzarif",
   cvHref: "/docs/zarif-nur-aiman-cv.pdf",
   cvLabel: "Download CV",
-  availability: "Open to QA and software quality roles",
+  availability: "IT Support at ServerFreak Technologies",
+  intro:
+    "IT support by day at ServerFreak. Tester and junior developer for a year at AMTIS. And the person behind a RHEL laptop in Klang that hosts everything on this domain.",
   summary:
     "Information Systems Engineering graduate with a 3.56 CGPA and CPRE certification, following a one-year internship delivering manual testing, REST API development, and requirements documentation across six concurrent projects at AMTIS Solutions, a Malaysian software house. Experienced in writing structured test cases, logging defect reports, and validating API behaviour using Postman and Laravel within Agile SDLC/STLC workflows and GitLab-based version control. Looking to bring a detail-oriented QA mindset into a growth environment and develop test automation skills in Playwright and TypeScript.",
   roles: [
@@ -64,6 +66,50 @@ export const profile = {
   ],
 } as const;
 
+export const currentRole = {
+  role: "IT Support",
+  company: "ServerFreak Technologies Sdn. Bhd.",
+  period: "July 2026 — now",
+  location: "Klang, Selangor",
+} as const;
+
+export const homelab = {
+  intro:
+    "Everything on this domain is hosted by me. The server only makes outbound connections through a Cloudflare Tunnel, so no ports are open to the internet.",
+  rack: [
+    { unit: "U04", tag: "EDGE", name: "Cloudflare Tunnel", spec: "DNS · WAF", tall: false },
+    { unit: "U03", tag: "ROUTING", name: "Nginx Proxy Manager", spec: "1 host per app", tall: false },
+    { unit: "U02", tag: "APPS · DOCKER COMPOSE", name: "portfolio · ikango · smartroute", spec: "RHEL 10", tall: true },
+    { unit: "U01", tag: "OPS", name: "Uptime Kuma · Netdata · malwatch", spec: "status", tall: false },
+  ],
+  notes: [
+    {
+      title: "Watching it",
+      body: "Uptime Kuma, Netdata, and a Telegram alert when something looks off.",
+    },
+    {
+      title: "Protecting it",
+      body: "SELinux enforcing, firewalld, Fail2ban, Tailscale for admin access, and malwatch, a YARA scanner I wrote in Go.",
+    },
+    {
+      title: "Learning next",
+      body: "GitHub Actions to GHCR, then k3s on a KVM guest, then Argo CD.",
+    },
+  ],
+  statusHref: "https://uptimekuma.zarep.my",
+} as const;
+
+export const ticker = [
+  "Manual testing",
+  "API testing",
+  "Linux",
+  "Docker",
+  "Laravel",
+  "Next.js",
+  "Cloudflare",
+  "Requirements",
+] as const;
+
 export const experience = {
   role: "Junior Software Developer",
   company: "AMTIS Solutions Sdn. Bhd.",
@@ -94,6 +140,10 @@ export const projects = [
       "Applied Laravel Passport for OAuth-based API authentication in a live production environment, enforcing token-based access control across gateway endpoints to secure inter-service communication.",
     ],
     links: [
+      {
+        label: "Live demo",
+        href: "https://smartroute.zarep.my",
+      },
       {
         label: "GitHub",
         href: "https://github.com/aimanzarif/fyp-api-gateway",
@@ -226,10 +276,8 @@ export const languages = [
 ] as const;
 
 export const navItems = [
-  { href: "#about", label: "About" },
-  { href: "#experience", label: "Experience" },
   { href: "#work", label: "Work" },
-  { href: "#skills", label: "Skills" },
+  { href: "#homelab", label: "Homelab" },
+  { href: "#experience", label: "Experience" },
   { href: "#education", label: "Education" },
-  { href: "#contact", label: "Contact" },
 ] as const;

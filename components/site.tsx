@@ -9,7 +9,7 @@ export function Container({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-6xl px-4 sm:px-5 md:px-8", className)}>
+    <div className={cn("mx-auto w-full max-w-7xl px-5 md:px-10", className)}>
       {children}
     </div>
   );
@@ -25,7 +25,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={cn("py-16 sm:py-20 md:py-32", className)}>
+    <section id={id} className={cn("py-20 md:py-32", className)}>
       <Container>{children}</Container>
     </section>
   );
@@ -35,20 +35,22 @@ export function SectionHeading({
   eyebrow,
   title,
   copy,
+  className,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   copy?: string;
+  className?: string;
 }) {
   return (
-    <div className="mb-8 max-w-2xl md:mb-16">
-      <p className="text-xs font-medium tracking-[0.22em] text-accent uppercase">{eyebrow}</p>
-      <h2 className="font-display mt-3 text-[1.75rem] leading-tight tracking-tight sm:text-3xl md:text-5xl">
+    <div className={cn("mb-10 max-w-3xl md:mb-16", className)}>
+      {eyebrow ? (
+        <p className="font-mono text-[13px] tracking-wide text-accent uppercase">{eyebrow}</p>
+      ) : null}
+      <h2 className="font-display mt-4 text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.92] font-extrabold tracking-[-0.04em]">
         {title}
       </h2>
-      {copy ? (
-        <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground md:text-lg">{copy}</p>
-      ) : null}
+      {copy ? <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">{copy}</p> : null}
     </div>
   );
 }
