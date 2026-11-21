@@ -6,6 +6,7 @@ export const size = {
 };
 export const contentType = "image/png";
 
+/* Same mark as app/icon.svg: a shell prompt with a sage block cursor. iOS rounds the corners itself. */
 export default function AppleIcon() {
   return new ImageResponse(
     (
@@ -16,14 +17,20 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#2C3639",
-          color: "#DCD7C8",
-          fontSize: 118,
-          fontWeight: 700,
-          letterSpacing: -4,
+          background: "#1c1f20",
         }}
       >
-        Z
+        <svg width="132" height="132" viewBox="0 0 32 32">
+          <path
+            d="M8.5 10.5 14 16l-5.5 5.5"
+            fill="none"
+            stroke="#ece7db"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <rect x="17" y="9.5" width="7" height="13" rx="1.2" fill="#a9d3b8" />
+        </svg>
       </div>
     ),
     size,
