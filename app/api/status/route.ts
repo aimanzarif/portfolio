@@ -59,9 +59,16 @@ async function load(): Promise<StatusReport> {
   }
 }
 
+/** Keep internal addresses and network errors in the server log, never in the public reply. */
+function publicReport(report: StatusReport): StatusReport {
+  if (report.ok) return report;
+  console.warn(`[status] ${report.reason ?? "unavailable"}`);
+  return { ok: false, checkedAt: report.checkedAt, reason: "unavailable" };
+}
+
 export async function GET() {
   if (!cached || Date.now() - cached.at > TTL_MS) {
-    cached = { at: Date.now(), report: await load() };
+    cached = { at: Date.now(), report: publicReport(await load()) };
   }
   return Response.json(cached.report, {
     headers: { "Cache-Control": "public, max-age=30, s-maxage=60" },

@@ -82,9 +82,16 @@ async function load(): Promise<Vitals> {
   };
 }
 
+/** Keep the internal Netdata address in the server log, never in the public reply. */
+function publicVitals(vitals: Vitals): Vitals {
+  if (vitals.ok) return vitals;
+  console.warn(`[vitals] ${vitals.reason ?? "unavailable"}`);
+  return { ok: false, checkedAt: vitals.checkedAt, reason: "unavailable" };
+}
+
 export async function GET() {
   if (!cached || Date.now() - cached.at > TTL_MS) {
-    cached = { at: Date.now(), vitals: await load() };
+    cached = { at: Date.now(), vitals: publicVitals(await load()) };
   }
   return Response.json(cached.vitals, { headers: { "Cache-Control": "public, max-age=10, s-maxage=15" } });
 }

@@ -66,6 +66,7 @@ const ERRORS: Record<string, string> = {
   queue_full: "guestbook queue full. zarif needs to approve some first.",
   captcha_failed: "bot check failed. try again?",
   closed: "guestbook not open yet. come back later ok.",
+  too_large: "that message is way too long lah.",
 };
 
 /** Output line for `guestbook sign`: runs the bot check and submits. */

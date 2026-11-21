@@ -20,6 +20,7 @@ services:
       NETDATA_URL: ${NETDATA_URL:-http://netdata:19999}
       TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
       TURNSTILE_SECRET: ${TURNSTILE_SECRET:-}
+      TURNSTILE_HOSTNAMES: ${TURNSTILE_HOSTNAMES:-zarep.my,www.zarep.my,staging.zarep.my}
       GUESTBOOK_ADMIN_TOKEN: ${GUESTBOOK_ADMIN_TOKEN:-}
       NEXT_PUBLIC_SITE_URL: https://staging.zarep.my
     extra_hosts:
