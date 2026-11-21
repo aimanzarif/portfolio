@@ -6,14 +6,14 @@ import { profile, ticker } from "@/lib/profile";
 export function Hero() {
   return (
     <section id="top" className="relative">
-      <Container className="flex flex-wrap items-center gap-14 pt-24 pb-10 md:pt-28 md:pb-14">
-        <div className="min-w-0 flex-[999_1_38rem]">
+      <Container className="flex flex-wrap items-center gap-14 pt-24 pb-10 md:pt-28 md:pb-14 xl:flex-nowrap xl:items-stretch xl:gap-12">
+        <div className="min-w-0 flex-[999_1_38rem] xl:flex-[0_1_auto]">
           {/* Hero motion is pure CSS so the text paints before JavaScript loads (faster LCP on phones). */}
           <div>
             <p className="css-fade-up font-mono text-[13px] tracking-[0.06em] text-muted-foreground uppercase">
               {profile.firstName} · {profile.title} · {profile.location}
             </p>
-            <h1 className="font-display mt-7 text-[clamp(3.5rem,10vw,9.5rem)] leading-[0.9] font-extrabold tracking-[-0.045em]">
+            <h1 className="font-display mt-7 text-[clamp(3.5rem,10vw,9.5rem)] xl:text-[7.75rem] leading-[0.9] font-extrabold tracking-[-0.045em]">
               <span className="block">
                 {["I", "keep", "things"].map((word, i) => (
                   <span key={word} className="inline-block overflow-hidden pb-[0.08em] align-bottom">

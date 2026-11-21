@@ -415,7 +415,7 @@ export function Terminal() {
   return (
     <aside
       aria-label="Interactive terminal"
-      className={`min-w-0 max-w-lg flex-[1_1_20rem] cursor-text overflow-hidden rounded-xl border bg-card transition-colors ${
+      className={`flex min-w-0 max-w-lg flex-[1_1_20rem] cursor-text flex-col overflow-hidden rounded-xl border bg-card transition-colors xl:max-w-none xl:self-stretch ${
         touched ? "border-line" : "terminal-invite border-accent/60"
       }`}
       onClick={() => input.current?.focus({ preventScroll: true })}
@@ -432,7 +432,7 @@ export function Terminal() {
           </span>
         ) : null}
       </div>
-      <div ref={scroller} className="h-80 overflow-y-auto p-5 font-mono text-[13px] leading-6" aria-live="polite">
+      <div ref={scroller} className="h-80 overflow-y-auto p-5 font-mono text-[13px] leading-6 xl:h-auto xl:min-h-80 xl:flex-1 xl:text-[14px] xl:leading-7" aria-live="polite">
         {lines.map((line) =>
           line.kind === "cmd" ? (
             <div key={line.id} className="mt-2 first:mt-0 break-words">
