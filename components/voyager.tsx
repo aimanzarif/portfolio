@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { getServerSnapshot, getSnapshot, isNight, klangParts, subscribe } from "@/lib/klang";
+import { getServerSnapshot, getSnapshot, isDarkOutside, isNight, klangParts, subscribe } from "@/lib/klang";
 import { summarize, useStatus } from "@/lib/use-status";
 import { onVoyager } from "@/lib/voyager-events";
 import { useVitals } from "@/lib/use-vitals";
@@ -267,7 +267,7 @@ export function Voyager() {
         ) : null}
       </div>
       <div className="pointer-events-auto relative flex items-end gap-1 rounded-xl border-2 border-foreground px-2 pt-7 pb-0.5 shadow-[4px_4px_0_var(--accent)] sm:pt-10">
-        <MascotRoom night={night} />
+        <MascotRoom night={klang ? isDarkOutside(klang.hour) : false} />
       <button
         type="button"
         onClick={onZarif}

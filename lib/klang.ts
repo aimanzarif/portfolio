@@ -42,3 +42,5 @@ export function mood(hour: number, weekend: boolean) {
 
 /** Night time in Klang: voyager sleeps. Matches the clock's "asleep" mood. */
 export const isNight = (hour: number) => hour < 7;
+/** Dark outside in Klang: sunset is around 7.15pm, sunrise around 7am. */
+export const isDarkOutside = (hour: number) => hour >= 19 || hour < 7;
