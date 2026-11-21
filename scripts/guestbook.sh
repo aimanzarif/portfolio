@@ -5,11 +5,17 @@
 #   ./scripts/guestbook.sh reject <id>          hide one (kept, never shown)
 #   ./scripts/guestbook.sh delete <id>          remove one completely
 # Uses GUESTBOOK_ADMIN_TOKEN from .env and talks to the running container directly.
-# Set CONTAINER=portfolio-staging to moderate staging.
+# Run it from the staging folder to moderate staging (or set CONTAINER=... yourself).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-CONTAINER="${CONTAINER:-portfolio}"
+# Default to the container for this folder: a *staging* checkout talks to portfolio-staging.
+case "$(basename "$PWD")" in
+  *staging*) DEFAULT_CONTAINER=portfolio-staging ;;
+  *) DEFAULT_CONTAINER=portfolio ;;
+esac
+CONTAINER="${CONTAINER:-$DEFAULT_CONTAINER}"
+echo "($CONTAINER)" >&2
 TOKEN="$(grep -E '^GUESTBOOK_ADMIN_TOKEN=' .env 2>/dev/null | cut -d= -f2- || true)"
 if [ -z "$TOKEN" ]; then
   echo "GUESTBOOK_ADMIN_TOKEN is not set in .env" >&2
@@ -26,7 +32,7 @@ const headers = { authorization: `Bearer ${process.env.TOKEN}`, "content-type": 
   const action = process.env.ACTION;
   if (action === "list") {
     const res = await fetch(base, { headers });
-    if (!res.ok) throw new Error(`HTTP ${res.status} (wrong token?)`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}: token in .env does not match this container. Recreate it: docker compose up -d`);
     const { pending } = await res.json();
     if (!pending.length) return console.log("Nothing waiting for approval.");
     for (const e of pending) console.log(`${e.id}\n  "${e.message}" - ${e.name}, ${e.createdAt}\n`);
