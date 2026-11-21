@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { getServerSnapshot, getSnapshot, isNight, klangParts, subscribe } from "@/lib/klang";
 import { summarize, useStatus } from "@/lib/use-status";
 import { onVoyager } from "@/lib/voyager-events";
-import { onLaunch } from "@/lib/launch";
 import { cn } from "@/lib/utils";
 
 /*
@@ -95,16 +94,6 @@ export function Voyager() {
         }
       }),
     [later, react, say],
-  );
-
-  // Konami rocket.
-  useEffect(
-    () =>
-      onLaunch(() => {
-        react("shock", 2200);
-        say("WAAAH. since when we got rocket?? who approved this budget?");
-      }),
-    [react, say],
   );
 
   // Blink now and then while awake.
