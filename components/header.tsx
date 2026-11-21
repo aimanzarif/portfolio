@@ -118,8 +118,8 @@ export function Header() {
             })}
           </nav>
           <div className="flex items-center justify-end gap-2">
-            <KlangClock className="hidden xl:flex" />
-            <ModeToggle mode="fun" className="hidden 2xl:flex" />
+            <KlangClock className="hidden xl:flex" compact />
+            <ModeToggle mode="fun" className="hidden xl:flex" />
             <ThemeToggle />
             <a
               href="#contact"

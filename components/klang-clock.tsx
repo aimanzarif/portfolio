@@ -44,7 +44,7 @@ function mood(hour: number, weekend: boolean) {
 }
 
 /** "KLANG 3:11pm · at work (probably) · 4/4 up" */
-export function KlangClock({ className }: { className?: string }) {
+export function KlangClock({ className, compact = false }: { className?: string; compact?: boolean }) {
   const minute = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const { state, up, total } = summarize(useStatus());
 
@@ -71,8 +71,10 @@ export function KlangClock({ className }: { className?: string }) {
         aria-hidden
       />
       <span className="text-foreground">{time} in Klang</span>
-      <span aria-hidden>·</span>
-      <span>{mood(hour, weekend)}</span>
+      <span aria-hidden className={compact ? "hidden 2xl:inline" : undefined}>
+        ·
+      </span>
+      <span className={compact ? "hidden 2xl:inline" : undefined}>{mood(hour, weekend)}</span>
       <span className="sr-only">(probably). {statusText}.</span>
     </a>
   );
