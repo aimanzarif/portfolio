@@ -1,0 +1,33 @@
+# Staging copy of the portfolio, served at https://staging.zarep.my
+# Reached only through Cloudflare Tunnel -> Nginx Proxy Manager, so no host port is published.
+# NPM proxy host: staging.zarep.my -> http://portfolio-staging:3000
+services:
+  web:
+    container_name: portfolio-staging
+    image: zarif-portfolio:staging
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SITE_URL: https://staging.zarep.my
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_SITE_URL: https://staging.zarep.my
+    networks:
+      - proxy-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+networks:
+  proxy-net:
+    # Same shared network Nginx Proxy Manager uses for the other projects.
+    # Confirm the name with: docker network ls
+    external: true
+    name: nginx-proxy-manager_proxy-net

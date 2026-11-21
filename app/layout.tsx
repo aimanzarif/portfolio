@@ -3,10 +3,10 @@ import { cookies, headers } from "next/headers";
 import { Bricolage_Grotesque, Figtree, JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { profile } from "@/lib/profile";
+import { isProduction, siteUrl } from "@/lib/site";
 import { parseThemePreference, THEME_STORAGE_KEY, themeClassName } from "@/lib/theme";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://zarep.my";
 const title = `${profile.shortName} — ${profile.title}`;
 const description =
   "Portfolio of Zarif Nur Aiman Bin Khairul Bahri: IT support, QA and full-stack delivery, plus a self-hosted RHEL homelab. Based in Klang, Malaysia.";
@@ -38,6 +38,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  robots: isProduction ? undefined : { index: false, follow: false },
   title,
   description,
   openGraph: {
