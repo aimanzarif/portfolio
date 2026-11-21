@@ -41,6 +41,13 @@ function windowView(night: boolean, sky: Sky): Rect[] {
   return out;
 }
 
+/* Ringgit notes: RM1 blue, RM10 red, RM50 teal, RM100 purple. */
+const NOTES: [x: number, delay: number, fill: string][] = [
+  [2, 0, "#5b8fd6"], [8, 0.4, "#e46a5e"], [14, 0.15, "#4fa79a"], [20, 0.6, "#8a6bbf"], [26, 0.25, "#5b8fd6"],
+  [32, 0.5, "#e46a5e"], [5, 1.1, "#8a6bbf"], [17, 1.3, "#5b8fd6"], [29, 0.9, "#4fa79a"], [35, 1.5, "#8a6bbf"],
+  [11, 1.7, "#e46a5e"], [23, 1.9, "#4fa79a"],
+];
+
 const RAIN: [x: number, delay: number][] = [
   [5, 0], [7, 0.35], [9, 0.15], [11, 0.5], [13, 0.25], [15, 0.6], [6, 0.7], [12, 0.85],
 ];
@@ -68,11 +75,14 @@ export function MascotRoom({
   sky,
   serviceDown,
   kopi,
+  money = false,
 }: {
   night: boolean;
   sky: Sky;
   serviceDown: boolean;
   kopi: Kopi;
+  /** Konami "gaji masuk" cheat: ringgit notes rain down. */
+  money?: boolean;
 }) {
   const steamX = kopi === "double" ? 23 : 21;
   const steaming = kopi === "full" || kopi === "double";
@@ -135,6 +145,16 @@ export function MascotRoom({
             <rect x={steamX} y={CUP_Y - 2} width="1" height="1" fill="#f7f3ea" className="voyager-z" />
             <rect x={steamX + 1} y={CUP_Y - 3} width="1" height="1" fill="#f7f3ea" className="voyager-z" style={{ animationDelay: "0.8s" }} />
           </>
+        ) : null}
+        {money ? (
+          <g>
+            {NOTES.map(([x, delay, fill], i) => (
+              <g key={i} className="room-money" style={{ animationDelay: `${delay}s` }}>
+                <rect x={x} y="2" width="4" height="2" fill={fill} />
+                <rect x={x + 1} y="2" width="2" height="1" fill="#f7f3ea" opacity="0.55" />
+              </g>
+            ))}
+          </g>
         ) : null}
       </svg>
       {night ? <span className="absolute inset-0 bg-[#1f2b3a]/25" /> : null}

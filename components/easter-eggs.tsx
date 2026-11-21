@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { onEggFound, replayEgg } from "@/lib/eggs";
+import { activateGaji } from "@/lib/gaji";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
@@ -31,6 +32,7 @@ export function EasterEggs() {
       if (progress === KONAMI.length) {
         progress = 0;
         replayEgg("konami"); // counts once, but the toast shows every time
+        activateGaji();
       }
     };
     window.addEventListener("keydown", onKey);

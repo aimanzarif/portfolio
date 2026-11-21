@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { ZarifSprite } from "@/components/zarif-sprite";
 import { MascotRoom, type Kopi } from "@/components/mascot-room";
 import { useWeather } from "@/lib/use-weather";
+import { onGaji } from "@/lib/gaji";
 
 /*
  * voyager: the laptop that actually hosts this site, as a 22×18 pixel mascot.
@@ -77,6 +78,7 @@ export function Voyager() {
   const [blink, setBlink] = useState(false);
   const [bubble, setBubble] = useState<{ who: "voyager" | "zarif"; text: string } | null>(null);
   const [zarifBlink, setZarifBlink] = useState(false);
+  const [money, setMoney] = useState(false);
   const zarifLine = useRef(0);
   const lineIndex = useRef(0);
   const timers = useRef<Record<string, number>>({});
@@ -136,6 +138,18 @@ export function Voyager() {
         } else {
           react("happy", 1600);
         }
+      }),
+    [later, react, say],
+  );
+
+  // Konami "gaji masuk" cheat: make it rain ringgit for a few seconds.
+  useEffect(
+    () =>
+      onGaji(() => {
+        setMoney(true);
+        later("money", 5200, () => setMoney(false));
+        react("happy", 5200);
+        say("GAJI DAH MASUK!! jom Japan! eh wait, Turkey first. no, NZ. all lah.", 5200, "zarif");
       }),
     [later, react, say],
   );
@@ -282,6 +296,7 @@ export function Voyager() {
           sky={weather?.ok ? weather.sky : "clear"}
           serviceDown={state === "degraded"}
           kopi={kopiFor(klang?.hour ?? 9)}
+          money={money}
         />
       <button
         type="button"

@@ -418,6 +418,18 @@ body {
   83% { opacity: 0.55; }
 }
 .room-flash { opacity: 0; animation: room-flash 7s steps(1, end) infinite; }
+@keyframes room-money {
+  0% { transform: translateY(-6px) rotate(0deg); }
+  50% { transform: translateY(12px) rotate(25deg); }
+  100% { transform: translateY(30px) rotate(-15deg); }
+}
+.room-money { animation: room-money 1.6s steps(12, end) infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes travel-stamp {
+  0% { transform: rotate(-3deg) scale(2.2); opacity: 0; }
+  60% { transform: rotate(-3deg) scale(0.92); opacity: 1; }
+  100% { transform: rotate(-3deg) scale(1); }
+}
+.travel-stamp { animation: travel-stamp 0.35s ease-out both; }
 .voyager-pop { animation: voyager-pop 0.25s ease-out both; }
 
 @keyframes caret-blink {
@@ -473,7 +485,7 @@ body {
   .marquee-track { animation: none; }
   .terminal-invite, .packet, .vent-bar, .css-rise, .css-wipe, .css-fade-up,
   .bulb-swing, .bulb-flicker .bulb-glass, .bulb-flicker .bulb-rays,
-  .voyager-bob, .voyager-bob-slow, .voyager-bob-alt, .voyager-shake, .voyager-key, .voyager-drop, .voyager-z, .voyager-pop, .room-rain, .room-flash { animation: none !important; }
+  .voyager-bob, .voyager-bob-slow, .voyager-bob-alt, .voyager-shake, .voyager-key, .voyager-drop, .voyager-z, .voyager-pop, .room-rain, .room-flash, .room-money, .travel-stamp { animation: none !important; }
   .packet { display: none; }
   .lift-card { transition: none; }
 

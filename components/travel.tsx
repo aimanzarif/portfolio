@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/reveal";
 import { Section, SectionHeading } from "@/components/site";
+import { TravelGate, TravelStamp } from "@/components/travel-stamp";
 
 /* "When gaji masuk": the travel list, as pixel-art boarding passes. */
 
@@ -131,9 +132,7 @@ export function Travel() {
                   </div>
                 </div>
                 <p className="mt-4 text-[15px]">{trip.note}</p>
-                <span className="mt-3 inline-block -rotate-3 rounded-md border-2 border-destructive px-2 py-0.5 font-mono text-[11px] font-bold tracking-wide text-destructive">
-                  WAITING FOR GAJI
-                </span>
+                <TravelStamp />
                 <dl className="mt-4 grid grid-cols-3 gap-2 font-mono text-[11px]">
                   <div>
                     <dt className="text-muted-foreground">PASSENGER</dt>
@@ -145,7 +144,7 @@ export function Travel() {
                   </div>
                   <div>
                     <dt className="text-muted-foreground">GATE</dt>
-                    <dd className="font-bold">when gaji masuk</dd>
+                    <TravelGate />
                   </div>
                 </dl>
               </div>
