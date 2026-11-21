@@ -1,0 +1,12 @@
+# Deploy: cd infra/error-worker && npx wrangler deploy
+name = "zarep-error-fallback"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+# Every request to these hosts passes through the Worker. Add more subdomains the same way.
+routes = [
+  { pattern = "zarep.my/*", zone_name = "zarep.my" },
+  { pattern = "staging.zarep.my/*", zone_name = "zarep.my" },
+]
+
+# No KV, no secrets, no state: it only forwards requests and formats failures.

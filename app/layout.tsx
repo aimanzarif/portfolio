@@ -79,7 +79,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <script
           nonce={nonce}
           dangerouslySetInnerHTML={{
-            __html: `(function(){var tt=window.trustedTypes;if(!tt||!tt.createPolicy)return;try{tt.createPolicy("default",{createHTML:function(s){return s},createScript:function(s){return s},createScriptURL:function(s){return s}})}catch(e){}})();`,
+            __html: `(function(){var tt=window.trustedTypes;if(!tt||!tt.createPolicy||tt.defaultPolicy)return;try{tt.createPolicy("default",{createHTML:function(s){return s},createScript:function(s){return s},createScriptURL:function(s){return s}})}catch(e){}})();`,
           }}
         />
         {beaconToken ? (

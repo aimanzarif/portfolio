@@ -29,7 +29,8 @@ export function proxy(request: NextRequest) {
     "connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com https://static.cloudflareinsights.com" +
       (isDev ? " ws: wss:" : ""),
     "require-trusted-types-for 'script'",
-    "trusted-types default 'allow-duplicates'",
+    // Next.js creates its own policies ("nextjs", and "nextjs#bundler" for webpack builds) to load chunks.
+    "trusted-types default nextjs nextjs#bundler 'allow-duplicates'",
     ...(!isDev && isHttps ? ["upgrade-insecure-requests"] : []),
   ].join("; ");
 
