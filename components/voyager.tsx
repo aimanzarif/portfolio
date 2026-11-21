@@ -8,6 +8,7 @@ import { useVitals } from "@/lib/use-vitals";
 import { isHot } from "@/lib/vitals";
 import { cn } from "@/lib/utils";
 import { ZarifSprite } from "@/components/zarif-sprite";
+import { MascotRoom } from "@/components/mascot-room";
 
 /*
  * voyager: the laptop that actually hosts this site, as a 22×18 pixel mascot.
@@ -82,6 +83,21 @@ export function Voyager() {
     },
     [later],
   );
+
+  const dismiss = useCallback(() => {
+    window.clearTimeout(timers.current.bubble);
+    setBubble(null);
+  }, []);
+
+  // Esc closes the speech bubble.
+  useEffect(() => {
+    if (!bubble) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") dismiss();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [bubble, dismiss]);
 
   const react = useCallback(
     (kind: "happy" | "shock" | "groggy", ms: number) => {
@@ -225,27 +241,39 @@ export function Voyager() {
         {bubble ? (
           <p
             key={bubble.who}
-            className="voyager-pop pointer-events-auto relative mr-2 max-w-[15rem] rounded-xl border-2 border-foreground bg-card px-3.5 py-2.5 font-mono text-xs leading-5 text-foreground shadow-[4px_4px_0_var(--accent)]"
+            className="voyager-pop pointer-events-auto relative mr-2 max-w-[15rem] rounded-xl border-2 border-foreground bg-card py-2.5 pr-8 pl-3.5 font-mono text-xs leading-5 text-foreground shadow-[4px_4px_0_var(--accent)]"
           >
             <span className="sr-only">{bubble.who}: </span>
             {bubble.text}
+            <button
+              type="button"
+              onClick={dismiss}
+              aria-label="Close message"
+              title="close (Esc)"
+              className="absolute top-1 right-1 grid size-6 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              <svg viewBox="0 0 5 5" className="size-3" shapeRendering="crispEdges" aria-hidden>
+                <path d="M0 0h1v1H0zM1 1h1v1H1zM2 2h1v1H2zM3 3h1v1H3zM4 4h1v1H4zM4 0h1v1H4zM3 1h1v1H3zM1 3h1v1H1zM0 4h1v1H0z" fill="currentColor" />
+              </svg>
+            </button>
             <span
               aria-hidden
               className={cn(
                 "absolute -bottom-[7px] size-3 rotate-45 border-r-2 border-b-2 border-foreground bg-card",
-                bubble.who === "voyager" ? "right-8" : "right-[4.35rem] sm:right-[6.5rem]",
+                bubble.who === "voyager" ? "right-[26px] sm:right-[42px]" : "right-[77px] sm:right-[116px]",
               )}
             />
           </p>
         ) : null}
       </div>
-      <div className="flex items-end gap-1">
+      <div className="pointer-events-auto relative flex items-end gap-1 rounded-xl border-2 border-foreground px-2 pt-7 pb-0.5 shadow-[4px_4px_0_var(--accent)] sm:pt-10">
+        <MascotRoom night={night} />
       <button
         type="button"
         onClick={onZarif}
         aria-label="Zarif, in pixel form. Click to say hai."
         title="zarif"
-        className="voyager-bob-alt pointer-events-auto rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent"
+        className="voyager-bob-alt pointer-events-auto relative rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent"
       >
         <ZarifSprite blink={zarifBlink} worried={state === "degraded" || hot} className="h-auto w-[26px] overflow-visible sm:w-[40px]" />
       </button>
@@ -255,7 +283,7 @@ export function Voyager() {
         aria-label={`${label}. Click to say hai.`}
         title="voyager"
         className={cn(
-          "pointer-events-auto rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent",
+          "pointer-events-auto relative rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent",
           mood === "sleep" ? "voyager-bob-slow" : mood === "shock" ? "voyager-shake" : "voyager-bob",
         )}
       >
@@ -266,10 +294,10 @@ export function Voyager() {
           aria-hidden
         >
           {/* lid and screen */}
-          <rect x="3" y="2" width="16" height="12" className="fill-[#6b706c] dark:fill-foreground" />
+          <rect x="3" y="2" width="16" height="12" className="fill-[#6b706c]" />
           <rect x="4" y="3" width="14" height="10" className="fill-[#1c1f20]" />
           {/* base and keyboard */}
-          <rect x="1" y="14" width="20" height="1" className="fill-[#6b706c] dark:fill-foreground" />
+          <rect x="1" y="14" width="20" height="1" className="fill-[#6b706c]" />
           <rect x="0" y="15" width="22" height="2" className="fill-muted-foreground" />
           {[3, 6, 9, 12, 15, 18].map((x, i) => (
             <rect
