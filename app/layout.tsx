@@ -6,6 +6,7 @@ import { profile } from "@/lib/profile";
 import { isProduction, siteUrl } from "@/lib/site";
 import { parseThemePreference, THEME_STORAGE_KEY, themeClassName } from "@/lib/theme";
 import "./globals.css";
+import { TRUSTED_TYPES_BOOTSTRAP, TRUSTED_TYPES_BOOTSTRAP_DEV } from "@/lib/trusted-types";
 
 const title = `${profile.shortName} — ${profile.title}`;
 const description =
@@ -79,7 +80,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <script
           nonce={nonce}
           dangerouslySetInnerHTML={{
-            __html: `(function(){var tt=window.trustedTypes;if(!tt||!tt.createPolicy||tt.defaultPolicy)return;try{tt.createPolicy("default",{createHTML:function(s){return s},createScript:function(s){return s},createScriptURL:function(s){return s}})}catch(e){}})();`,
+            __html: process.env.NODE_ENV === "development" ? TRUSTED_TYPES_BOOTSTRAP_DEV : TRUSTED_TYPES_BOOTSTRAP,
           }}
         />
         {beaconToken ? (
