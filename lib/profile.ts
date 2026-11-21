@@ -240,8 +240,8 @@ export const languages = [
 ] as const;
 
 export const navItems = [
-  { href: "#work", label: "Work" },
-  { href: "#helpdesk", label: "Help desk" },
-  { href: "#homelab", label: "Homelab" },
-  { href: "#experience", label: "Experience" },
+  { href: "#work", label: "Work", path: "work" },
+  { href: "#helpdesk", label: "Help desk", path: "help-desk" },
+  { href: "#homelab", label: "Homelab", path: "homelab" },
+  { href: "#experience", label: "Experience", path: "experience" },
 ] as const;

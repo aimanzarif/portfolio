@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { findEgg } from "@/lib/eggs";
 import { motion } from "motion/react";
+import { KlangClock } from "@/components/klang-clock";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { navItems, profile } from "@/lib/profile";
 import { Container } from "@/components/site";
@@ -16,6 +17,7 @@ export function Header() {
   const [progress, setProgress] = useState(0);
   const active = useActiveSection(SECTION_IDS);
   const presses = useRef<number[]>([]);
+  const currentPath = navItems.find((item) => item.href === `#${active}`)?.path ?? (active === "contact" ? "contact" : "");
 
   const pressPower = () => {
     const now = Date.now();
@@ -38,7 +40,7 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 768px)");
+    const media = window.matchMedia("(min-width: 1024px)");
     const onChange = () => {
       if (media.matches) setOpen(false);
     };
@@ -60,7 +62,7 @@ export function Header() {
       }`}
     >
       <Container>
-        <div className="flex items-center justify-between py-4">
+        <div className="grid grid-cols-[1fr_auto] items-center gap-4 py-4 lg:grid-cols-[1fr_auto_1fr]">
           <div className="flex items-center gap-1">
             <button
               type="button"
@@ -70,11 +72,21 @@ export function Header() {
             >
               <span className="led size-2.5 rounded-full bg-accent" aria-hidden />
             </button>
-            <a href="#top" className="font-mono text-[17px] font-bold">
-              zarep.my
+            <a href="#top" className="flex items-baseline font-mono text-[17px] whitespace-nowrap" aria-label="zarep.my, back to top">
+              <span className="font-bold">zarep.my</span>
+              <span className="ml-2 hidden text-accent sm:inline" aria-hidden>
+                ~{currentPath ? `/${currentPath}` : ""}
+              </span>
+              <span className="hidden text-muted-foreground sm:inline" aria-hidden>
+                $
+              </span>
+              <span
+                className="caret-blink ml-1 hidden h-[1em] w-[0.55em] translate-y-[0.15em] self-center bg-accent sm:inline-block"
+                aria-hidden
+              />
             </a>
           </div>
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
             {navItems.map((item) => {
               const isActive = active === item.href.slice(1);
               return (
@@ -82,26 +94,40 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "true" : undefined}
-                  className={`px-3.5 py-2 text-[15px] transition-colors ${
-                    isActive ? "text-foreground underline decoration-accent decoration-2 underline-offset-8" : "text-muted-foreground hover:text-foreground"
+                  className={`relative rounded-full px-3 py-1.5 font-mono text-[14px] whitespace-nowrap transition-colors ${
+                    isActive ? "text-accent-foreground" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {item.label}
+                  {isActive ? (
+                    <motion.span
+                      layoutId="nav-active"
+                      className="absolute inset-0 rounded-full bg-accent"
+                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                    />
+                  ) : null}
+                  <span className="relative">
+                    <span className={isActive ? "" : "text-accent"}>./</span>
+                    {item.path}
+                  </span>
                 </a>
               );
             })}
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
+            <KlangClock className="hidden xl:flex" />
             <ThemeToggle />
             <a
               href="#contact"
-              className="hidden min-h-11 items-center rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-foreground transition hover:opacity-90 md:inline-flex"
+              className="group hidden min-h-11 items-center gap-1.5 rounded-full bg-accent px-5 whitespace-nowrap text-[15px] font-semibold text-accent-foreground transition hover:-rotate-2 lg:inline-flex"
             >
-              Email me
+              Say hai
+              <span className="transition-transform group-hover:translate-x-1" aria-hidden>
+                →
+              </span>
             </a>
             <button
               type="button"
-              className="inline-flex size-11 items-center justify-center md:hidden"
+              className="inline-flex size-11 items-center justify-center lg:hidden"
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((value) => !value)}
@@ -115,7 +141,7 @@ export function Header() {
         </div>
         {open ? (
           <nav
-            className="flex max-h-[calc(100dvh-5rem)] flex-col overflow-y-auto border-t border-line py-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden"
+            className="flex max-h-[calc(100dvh-5rem)] flex-col overflow-y-auto border-t border-line py-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden"
             aria-label="Mobile"
           >
             {navItems.map((item) => (
@@ -123,9 +149,10 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="py-3.5 text-lg text-muted-foreground"
+                className="py-3.5 font-mono text-lg text-muted-foreground"
               >
-                {item.label}
+                <span className="text-accent">./</span>
+                {item.path}
               </a>
             ))}
             <a
@@ -140,10 +167,11 @@ export function Header() {
             <a
               href="#contact"
               onClick={() => setOpen(false)}
-              className="mt-2 mb-3 inline-flex min-h-12 items-center justify-center rounded-full bg-accent font-semibold text-accent-foreground"
+              className="mt-2 inline-flex min-h-12 items-center justify-center rounded-full bg-accent font-semibold text-accent-foreground"
             >
-              Email me
+              Say hai →
             </a>
+            <KlangClock className="mt-3 mb-3 flex self-start" />
           </nav>
         ) : null}
       </Container>
