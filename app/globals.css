@@ -188,7 +188,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: 4.5rem; /* header height, for keyboard and hash jumps */
 }
 
 body {

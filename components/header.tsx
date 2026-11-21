@@ -66,7 +66,7 @@ export function Header() {
         Skip to content
       </a>
       <Container>
-        <div className="flex items-center gap-4 py-3.5">
+        <div data-header-bar className="flex items-center gap-4 py-3.5">
           <div className="flex items-center gap-1">
             <button
               type="button"

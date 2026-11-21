@@ -49,7 +49,7 @@ const cardStyles = [
 export function Work() {
   return (
     <section id="work" className="bg-band text-band-foreground">
-      <Container className="py-16 md:py-24">
+      <Container className="py-12 md:py-16">
         <Reveal>
           <div className="mb-10 flex flex-wrap items-end justify-between gap-4 md:mb-12">
             <h2 className="font-display text-[clamp(2.75rem,6.5vw,5.75rem)] leading-[0.9] font-extrabold tracking-[-0.04em]">
@@ -359,7 +359,7 @@ export function Education() {
 export function Contact() {
   return (
     <section id="contact" className="bg-accent text-accent-foreground">
-      <Container className="pt-16 pb-10 md:pt-24">
+      <Container className="pt-12 pb-10 md:pt-16">
         <Reveal>
           <h2 className="font-display text-[clamp(3.5rem,11vw,10.5rem)] leading-[0.88] font-extrabold tracking-[-0.05em]">
             <SplitText text={"Something\nbroken? Jom."} />
