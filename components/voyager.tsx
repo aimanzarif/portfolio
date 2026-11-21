@@ -267,7 +267,7 @@ export function Voyager() {
         ) : null}
       </div>
       <div className="pointer-events-auto relative flex items-end gap-1 rounded-xl border-2 border-foreground px-2 pt-7 pb-0.5 shadow-[4px_4px_0_var(--accent)] sm:pt-10">
-        <MascotRoom night={klang ? isDarkOutside(klang.hour) : false} />
+        <MascotRoom night={minute === null ? false : isDarkOutside(minute)} />
       <button
         type="button"
         onClick={onZarif}

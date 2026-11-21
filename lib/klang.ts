@@ -42,5 +42,34 @@ export function mood(hour: number, weekend: boolean) {
 
 /** Night time in Klang: voyager sleeps. Matches the clock's "asleep" mood. */
 export const isNight = (hour: number) => hour < 7;
-/** Dark outside in Klang: sunset is around 7.15pm, sunrise around 7am. */
-export const isDarkOutside = (hour: number) => hour >= 19 || hour < 7;
+/* Real sunrise and sunset for Klang (NOAA solar equations), so the mascot window follows the actual sky. */
+const LAT = 3.0449;
+const LON = 101.4456;
+const OFFSET_MIN = 8 * 60; // Klang is UTC+8 all year
+
+/** Sunrise and sunset in Klang local minutes after midnight, for the given Klang day of the year. */
+export function klangSun(dayOfYear: number) {
+  const rad = Math.PI / 180;
+  const g = ((2 * Math.PI) / 365) * (dayOfYear - 1);
+  const eqTime =
+    229.18 *
+    (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  const decl =
+    0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) +
+    0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  const ha =
+    Math.acos(Math.cos(90.833 * rad) / (Math.cos(LAT * rad) * Math.cos(decl)) - Math.tan(LAT * rad) * Math.tan(decl)) / rad;
+  return {
+    sunrise: 720 - 4 * (LON + ha) - eqTime + OFFSET_MIN,
+    sunset: 720 - 4 * (LON - ha) - eqTime + OFFSET_MIN,
+  };
+}
+
+/** Dark outside in Klang right now: before today's sunrise or after today's sunset. */
+export function isDarkOutside(minute: number) {
+  const local = new Date((minute + OFFSET_MIN) * 60_000); // read the UTC fields as Klang time
+  const dayOfYear = Math.floor((local.getTime() - Date.UTC(local.getUTCFullYear(), 0, 1)) / 86_400_000) + 1;
+  const now = local.getUTCHours() * 60 + local.getUTCMinutes();
+  const { sunrise, sunset } = klangSun(dayOfYear);
+  return now < sunrise || now >= sunset;
+}
