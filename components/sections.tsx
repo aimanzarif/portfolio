@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CloudflareEmailOff } from "@/components/cloudflare-email-off";
-import { ExperienceStreams } from "@/components/sections-client";
+import { ExperienceStreams, TicketQueue } from "@/components/sections-client";
+import { SplitText, Stamp } from "@/components/motion-bits";
 import { Reveal } from "@/components/reveal";
 import { StatusPanel } from "@/components/status-panel";
 import { Container, Section, SectionHeading } from "@/components/site";
@@ -47,13 +48,11 @@ const cardStyles = [
 export function Work() {
   return (
     <section id="work" className="bg-band text-band-foreground">
-      <Container className="py-24 md:py-32">
+      <Container className="py-16 md:py-24">
         <Reveal>
-          <div className="mb-14 flex flex-wrap items-end justify-between gap-4 md:mb-16">
-            <h2 className="font-display text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.9] font-extrabold tracking-[-0.04em]">
-              Things I
-              <br />
-              built (or keep alive).
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4 md:mb-12">
+            <h2 className="font-display text-[clamp(2.75rem,6.5vw,5.75rem)] leading-[0.9] font-extrabold tracking-[-0.04em]">
+              <SplitText text={"Things I built\n(or keep alive)."} />
             </h2>
             <p className="max-w-xs opacity-80">
               Two are live on my laptop right now. Go on, click them. I&apos;ll know if it goes down.
@@ -65,7 +64,7 @@ export function Work() {
           {projects.map((project, index) => {
             const style = cardStyles[index % cardStyles.length];
             return (
-              <Reveal key={project.id}>
+              <Reveal key={project.id} tilt>
                 <article className={cn("lift-card flex flex-wrap gap-10 rounded-[1.25rem] p-6 sm:p-10", style.card)}>
                   <div className="min-w-0 flex-[1_1_22rem]">
                     <p className={cn("flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-xs", style.muted)}>
@@ -104,13 +103,13 @@ export function Work() {
 
                   <div className="min-w-0 flex-[1_1_22rem]">
                     {project.image ? (
-                      <div className={cn("relative aspect-[16/10] overflow-hidden rounded-xl border-2", style.frame)}>
+                      <div className={cn("group relative aspect-[16/10] overflow-hidden rounded-xl border-2", style.frame)}>
                         <Image
                           src={project.image.src}
                           alt={project.image.alt}
                           fill
                           sizes="(min-width: 1024px) 560px, 100vw"
-                          className="object-cover object-top"
+                          className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                         />
                       </div>
                     ) : (
@@ -133,7 +132,7 @@ export function Work() {
           })}
         </div>
         <Reveal>
-          <p className="mt-12 max-w-3xl opacity-80">{alsoBuilt}</p>
+          <p className="mt-10 max-w-3xl opacity-80">{alsoBuilt}</p>
         </Reveal>
       </Container>
     </section>
@@ -143,7 +142,7 @@ export function Work() {
 export function HelpDesk() {
   return (
     <Section id="helpdesk">
-      <div className="flex flex-wrap items-start gap-16">
+      <div className="flex flex-wrap items-start gap-12">
         <Reveal className="min-w-0 flex-[1_1_24rem]">
           <SectionHeading
             eyebrow="Day job · ServerFreak"
@@ -153,29 +152,7 @@ export function HelpDesk() {
           />
         </Reveal>
         <Reveal className="min-w-0 flex-[1_1_30rem]">
-          <div className="overflow-hidden rounded-xl border-2 border-line bg-card">
-            <div className="flex items-center justify-between border-b-2 border-line px-5 py-3 font-mono text-xs text-muted-foreground">
-              <span className="font-bold text-foreground">QUEUE · a normal day</span>
-              <span>{tickets.length} open → 0 open</span>
-            </div>
-            <ul className="divide-y divide-line">
-              {tickets.map((ticket, index) => (
-                <li key={ticket.title} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3.5">
-                  <span className="w-12 shrink-0 font-mono text-xs text-muted-foreground">
-                    #{String(index + 1).padStart(3, "0")}
-                  </span>
-                  <div className="min-w-0 flex-1 basis-48">
-                    <p className="font-medium">&ldquo;{ticket.title}&rdquo;</p>
-                    <p className="text-sm text-muted-foreground">{ticket.fix}</p>
-                  </div>
-                  <span className="font-mono text-[11px] text-muted-foreground uppercase">{ticket.channel}</span>
-                  <span className="rounded-full bg-accent px-2.5 py-0.5 font-mono text-[11px] font-bold text-accent-foreground">
-                    RESOLVED
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <TicketQueue tickets={tickets} />
         </Reveal>
       </div>
     </Section>
@@ -184,8 +161,8 @@ export function HelpDesk() {
 
 export function Homelab() {
   return (
-    <Section id="homelab" className="pt-4 md:pt-8">
-      <div className="flex flex-wrap items-start gap-16">
+    <Section id="homelab">
+      <div className="flex flex-wrap items-start gap-12">
         <Reveal className="min-w-0 flex-[1_1_26rem]">
           <SectionHeading
             eyebrow="How this site runs"
@@ -205,13 +182,26 @@ export function Homelab() {
 
         <Reveal className="min-w-0 max-w-xl flex-[1_1_26rem]">
           <p className="mb-2.5 text-center font-mono text-xs text-muted-foreground">▼ INTERNET</p>
-          <div className="rounded-md border-2 border-line bg-card px-[18px] shadow-[inset_0_0_0_6px_var(--background)]">
-            {homelab.rack.map((unit) => (
+          <div className="relative rounded-md border-2 border-line bg-card px-[18px] shadow-[inset_0_0_0_6px_var(--background)]">
+            <div aria-hidden className="pointer-events-none absolute top-0 bottom-0 left-[22px] w-px bg-line">
+              {[0, 1, 2].map((n) => (
+                <span
+                  key={n}
+                  className="packet absolute -left-[3px] size-[7px] rounded-full bg-accent shadow-[0_0_10px_var(--accent)]"
+                  style={{ animationDelay: `${n * 1.07}s` }}
+                />
+              ))}
+            </div>
+            {homelab.rack.map((unit, unitIndex) => (
               <div
                 key={unit.unit}
                 className={cn("flex items-center gap-4 border-b border-line", unit.tall ? "py-8" : "py-[18px]")}
               >
-                <span className="led size-2.5 shrink-0 rounded-full bg-accent" aria-hidden />
+                <span
+                  className="led relative size-2.5 shrink-0 rounded-full bg-accent"
+                  style={{ animationDelay: `${unitIndex * 0.6}s` }}
+                  aria-hidden
+                />
                 <div className="min-w-0 flex-1">
                   <div className="font-mono text-[11px] text-muted-foreground">
                     {unit.unit} · {unit.tag}
@@ -232,15 +222,15 @@ export function Homelab() {
 
 export function Incident() {
   return (
-    <Section id="incident" className="pt-4 md:pt-8">
-      <Reveal>
+    <Section id="incident">
+      <Reveal tilt>
         <article className="rounded-xl border-2 border-foreground bg-card p-6 shadow-[8px_8px_0_var(--accent)] sm:p-10">
           <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
             <span className="font-bold">INCIDENT REPORT · {incident.id}</span>
-            <span className="rounded-full bg-accent px-2.5 py-0.5 font-bold text-accent-foreground">RESOLVED</span>
+            <Stamp className="text-xs">RESOLVED</Stamp>
           </div>
           <h2 className="font-display mt-6 text-[clamp(2.5rem,6vw,5rem)] leading-[0.92] font-extrabold tracking-[-0.04em]">
-            {incident.title}
+            <SplitText text={incident.title} />
           </h2>
           <dl className="mt-10 grid gap-x-10 gap-y-5 sm:grid-cols-2">
             {incident.rows.map((row) => (
@@ -259,12 +249,12 @@ export function Incident() {
 
 export function Experience() {
   return (
-    <Section id="experience" className="pt-4 md:pt-8">
+    <Section id="experience">
       <Reveal>
         <SectionHeading title="Where I've been." />
       </Reveal>
       <Reveal>
-        <div className="flex flex-wrap gap-x-12 gap-y-4 border-t border-line py-9">
+        <div className="flex flex-wrap gap-x-12 gap-y-4 border-t border-line py-7">
           <p className="font-display text-[2.5rem] leading-none font-extrabold tracking-[-0.03em] text-accent sm:basis-56">
             2026 → now
           </p>
@@ -278,7 +268,7 @@ export function Experience() {
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-x-12 gap-y-4 border-y border-line py-9">
+        <div className="flex flex-wrap gap-x-12 gap-y-4 border-y border-line py-7">
           <p className="font-display text-[2.5rem] leading-none font-extrabold tracking-[-0.03em] sm:basis-56">
             2025 – 26
           </p>
@@ -298,7 +288,7 @@ export function Experience() {
 
 export function Education() {
   return (
-    <Section id="education" className="pt-4 md:pt-8">
+    <Section id="education">
       <Reveal>
         <div className="grid gap-12 md:grid-cols-3">
           <div>
@@ -351,12 +341,10 @@ export function Education() {
 export function Contact() {
   return (
     <section id="contact" className="bg-accent text-accent-foreground">
-      <Container className="pt-24 pb-12 md:pt-32">
+      <Container className="pt-16 pb-10 md:pt-24">
         <Reveal>
           <h2 className="font-display text-[clamp(3.5rem,11vw,10.5rem)] leading-[0.88] font-extrabold tracking-[-0.05em]">
-            Something
-            <br />
-            broken? Jom.
+            <SplitText text={"Something\nbroken? Jom."} />
           </h2>
           <p className="mt-8 max-w-xl text-lg">
             Hiring, collaborating, or just want to talk servers. Email works best. Introvert, but a very responsive
@@ -371,7 +359,7 @@ export function Contact() {
             </a>
           </CloudflareEmailOff>
         </Reveal>
-        <div className="mt-16 flex flex-wrap gap-x-8 gap-y-3 text-[15px] font-semibold">
+        <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-[15px] font-semibold">
           <a href={profile.linkedin} target="_blank" rel="noreferrer">
             LinkedIn ↗
           </a>
@@ -383,7 +371,7 @@ export function Contact() {
           </a>
           <a href={profile.phoneHref}>{profile.phone}</a>
         </div>
-        <p className="mt-14 pb-[env(safe-area-inset-bottom)] font-mono text-xs">
+        <p className="mt-10 pb-[env(safe-area-inset-bottom)] font-mono text-xs">
           © {new Date().getFullYear()} {profile.shortName} · Served from a laptop in Klang. If it&apos;s down, it&apos;s
           probably updating.
         </p>

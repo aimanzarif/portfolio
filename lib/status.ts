@@ -9,4 +9,4 @@ export type StatusMonitor = {
 
 export type StatusReport =
   | { ok: true; checkedAt: string; monitors: StatusMonitor[] }
-  | { ok: false; checkedAt: string };
+  | { ok: false; checkedAt: string; reason?: string };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
+import { useReducedMotion } from "motion/react";
 import { profile, projects } from "@/lib/profile";
 import type { StatusReport } from "@/lib/status";
 
@@ -8,13 +9,16 @@ type Line = { id: number; kind: "cmd" | "out"; body: ReactNode };
 
 const PROMPT = "zarep@voyager:~$";
 
-const boot: Omit<Line, "id">[] = [
-  { kind: "cmd", body: "whoami" },
-  { kind: "out", body: "zarif. IT support. fixes things." },
-  { kind: "cmd", body: "uptime --pretty" },
-  { kind: "out", body: "up, somehow. scroll to the homelab for real numbers." },
-  { kind: "out", body: <span className="text-accent">psst. this is a real terminal. type `help`.</span> },
+const boot: { kind: Line["kind"]; text: string; hint?: boolean }[] = [
+  { kind: "cmd", text: "whoami" },
+  { kind: "out", text: "zarif. IT support. fixes things." },
+  { kind: "cmd", text: "uptime --pretty" },
+  { kind: "out", text: "up, somehow. scroll to the homelab for real numbers." },
+  { kind: "out", text: "psst. this is a real terminal. type `help` ↓", hint: true },
 ];
+
+const bootBody = (line: (typeof boot)[number], text = line.text): ReactNode =>
+  line.hint ? <span className="text-accent">{text}</span> : text;
 
 function ExtLink({ href, children }: { href: string; children: ReactNode }) {
   return (
@@ -155,13 +159,52 @@ Shell:   bash, and patience`}
 }
 
 export function Terminal() {
-  const [lines, setLines] = useState<Line[]>(() => boot.map((line, id) => ({ ...line, id })));
+  const reduced = useReducedMotion();
+  const [lines, setLines] = useState<Line[]>([]);
   const [value, setValue] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [cursor, setCursor] = useState<number | null>(null);
-  const nextId = useRef(boot.length);
+  const [touched, setTouched] = useState(false);
+  const nextId = useRef(0);
+  const booted = useRef(false);
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
+
+  // Boot sequence: commands are typed out, outputs appear whole. Skipped for reduced motion.
+  useEffect(() => {
+    let alive = true;
+    const timers: number[] = [];
+    const wait = (ms: number) => new Promise<void>((resolve) => timers.push(window.setTimeout(resolve, ms)));
+
+    const run = async () => {
+      const step = reduced ? 0 : 1;
+      await wait(reduced ? 0 : 900);
+      const result: Line[] = [];
+      for (const line of boot) {
+        if (!alive) return;
+        const id = nextId.current++;
+        if (line.kind === "cmd" && step) {
+          for (let i = 1; i <= line.text.length; i++) {
+            await wait(45 + Math.random() * 50);
+            if (!alive) return;
+            setLines([...result, { id, kind: "cmd", body: line.text.slice(0, i) }]);
+          }
+          await wait(250);
+        } else if (step) {
+          await wait(line.hint ? 500 : 120);
+        }
+        if (!alive) return;
+        result.push({ id, kind: line.kind, body: bootBody(line) });
+        setLines([...result]);
+      }
+      booted.current = true;
+    };
+    run();
+    return () => {
+      alive = false;
+      timers.forEach(window.clearTimeout);
+    };
+  }, [reduced]);
 
   useEffect(() => {
     const el = scroller.current;
@@ -176,6 +219,11 @@ export function Terminal() {
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setTouched(true);
+    if (!booted.current) {
+      booted.current = true;
+      setLines(boot.map((line) => ({ id: nextId.current++, kind: line.kind, body: bootBody(line) })));
+    }
     const raw = value;
     setValue("");
     setCursor(null);
@@ -222,14 +270,22 @@ export function Terminal() {
   return (
     <aside
       aria-label="Interactive terminal"
-      className="min-w-0 max-w-lg flex-[1_1_20rem] overflow-hidden rounded-xl border border-line bg-card"
+      className={`min-w-0 max-w-lg flex-[1_1_20rem] cursor-text overflow-hidden rounded-xl border bg-card transition-colors ${
+        touched ? "border-line" : "terminal-invite border-accent/60"
+      }`}
       onClick={() => input.current?.focus({ preventScroll: true })}
     >
       <div className="flex items-center gap-2 border-b border-line px-4 py-3 font-mono text-xs text-muted-foreground">
         <span className="size-2.5 rounded-full bg-line" />
         <span className="size-2.5 rounded-full bg-line" />
         <span className="size-2.5 rounded-full bg-line" />
-        <span className="ml-2">zarep@voyager: ~</span>
+        <span className="ml-2 truncate">zarep@voyager: ~</span>
+        {!touched ? (
+          <span className="ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap text-accent">
+            <span className="led size-1.5 rounded-full bg-accent" aria-hidden />
+            click to type
+          </span>
+        ) : null}
       </div>
       <div ref={scroller} className="h-80 overflow-y-auto p-5 font-mono text-[13px] leading-6" aria-live="polite">
         {lines.map((line) =>
@@ -250,20 +306,27 @@ export function Terminal() {
           <span className="text-accent" aria-hidden>
             $
           </span>
-          <input
-            ref={input}
-            id="terminal-input"
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-            onKeyDown={onKeyDown}
-            autoComplete="off"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck={false}
-            placeholder="type help"
-            title={PROMPT}
-            className="min-w-0 flex-1 bg-transparent text-foreground caret-accent outline-none placeholder:text-muted-foreground/60"
-          />
+          <div className="relative min-w-0 flex-1 overflow-hidden">
+            <div aria-hidden className="pointer-events-none whitespace-pre text-foreground">
+              {value}
+              <span className="caret-blink inline-block h-[1.15em] w-[0.6em] translate-y-[0.2em] bg-accent" />
+              {!value ? <span className="ml-2 text-muted-foreground/60">type help</span> : null}
+            </div>
+            <input
+              ref={input}
+              id="terminal-input"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+              onKeyDown={onKeyDown}
+              onFocus={() => setTouched(true)}
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              title={PROMPT}
+              className="absolute inset-0 w-full bg-transparent text-transparent caret-transparent outline-none selection:bg-accent/30"
+            />
+          </div>
         </form>
       </div>
     </aside>

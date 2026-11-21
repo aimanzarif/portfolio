@@ -29,7 +29,12 @@ async function load(): Promise<StatusReport> {
       fetch(`${BASE}/api/status-page/${SLUG}`, opts),
       fetch(`${BASE}/api/status-page/heartbeat/${SLUG}`, opts),
     ]);
-    if (!pageRes.ok || !beatRes.ok) return { ok: false, checkedAt };
+    if (!pageRes.ok || !beatRes.ok) {
+      return { ok: false, checkedAt, reason: `HTTP ${pageRes.status}/${beatRes.status} from ${BASE} (slug "${SLUG}")` };
+    }
+    if (!(pageRes.headers.get("content-type") ?? "").includes("json")) {
+      return { ok: false, checkedAt, reason: `Non-JSON reply from ${BASE}; a Cloudflare challenge or login page is likely in the way` };
+    }
 
     const page = (await pageRes.json()) as PageJson;
     const beats = (await beatRes.json()) as HeartbeatJson;
@@ -48,8 +53,9 @@ async function load(): Promise<StatusReport> {
       });
 
     return { ok: true, checkedAt, monitors };
-  } catch {
-    return { ok: false, checkedAt };
+  } catch (error) {
+    const cause = error instanceof Error ? (error.cause instanceof Error ? error.cause.message : error.message) : "unknown";
+    return { ok: false, checkedAt, reason: `Could not reach ${BASE}: ${cause}` };
   }
 }
 
