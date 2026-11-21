@@ -29,6 +29,14 @@ services:
     networks:
       - proxy-net
     restart: unless-stopped
+    # Hardening: no privilege escalation, no Linux capabilities (port 3000 needs none),
+    # and limits so a runaway or attacked site can't starve SmartRoute and IkanGo on the same laptop.
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 512m
+    pids_limit: 200
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000"]
       interval: 30s
