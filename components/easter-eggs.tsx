@@ -2,19 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { EGGS, eggHints, onEggFound, replayEgg, useEggs } from "@/lib/eggs";
+import { onEggFound, replayEgg } from "@/lib/eggs";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
-/** Konami listener, the "egg found" toast, a console hello, and the eggs-found counter with hints. */
+/** Konami listener, the "egg found" toast and a console hello. Progress and hints live in the terminal (`eggs`). */
 export function EasterEggs() {
-  const found = useEggs();
   const [toast, setToast] = useState<{ message: string; count: number; key: number } | null>(null);
-  const [hintsOpen, setHintsOpen] = useState(false);
 
   useEffect(() => {
     console.log(
-      "%cOi, curious one.\n%cThere are 3 easter eggs on this page. None of them in here, sorry ah.\nHiring? zarif@zarep.my",
+      "%cOi, curious one.\n%cThere are 3 easter eggs on this page. None of them in here, sorry ah. Type `eggs` in the terminal for hints.\nHiring? zarif@zarep.my",
       "font-size:16px;font-weight:bold",
       "font-size:12px",
     );
@@ -43,53 +41,8 @@ export function EasterEggs() {
     };
   }, []);
 
-  const all = found.length === EGGS.length;
-
   return (
     <>
-      <div className="fixed bottom-5 left-5 z-40 flex flex-col items-start gap-2">
-        <AnimatePresence>
-          {hintsOpen ? (
-            <motion.div
-              id="egg-hints"
-              initial={{ opacity: 0, y: 10, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 6 }}
-              className="w-72 rounded-xl border-2 border-line bg-card p-4 font-mono text-[13px] shadow-[6px_6px_0_var(--accent)]"
-            >
-              <p className="font-bold">{all ? "Semua dah jumpa. Respect." : "Hints, since you ask"}</p>
-              <ul className="mt-3 space-y-2.5">
-                {EGGS.map((egg) => {
-                  const done = found.includes(egg);
-                  return (
-                    <li key={egg} className={`flex gap-2 ${done ? "text-muted-foreground line-through" : ""}`}>
-                      <span className={done ? "text-accent" : "text-muted-foreground"} aria-hidden>
-                        {done ? "✓" : "○"}
-                      </span>
-                      <span>
-                        {eggHints[egg]}
-                        <span className="sr-only">{done ? " (found)" : " (not found yet)"}</span>
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-        <button
-          type="button"
-          onClick={() => setHintsOpen((open) => !open)}
-          aria-expanded={hintsOpen}
-          aria-controls="egg-hints"
-          className="flex min-h-11 items-center gap-2 rounded-full border-2 border-line bg-card px-4 font-mono text-xs font-bold shadow-[3px_3px_0_var(--accent)] transition hover:-translate-y-0.5"
-        >
-          <span className={`size-2 rounded-full bg-accent ${all ? "" : "led"}`} aria-hidden />
-          {all ? "ALL 3 EGGS FOUND" : `${found.length}/3 EASTER EGGS FOUND`}
-          <span className="text-muted-foreground">{hintsOpen ? "×" : "?"}</span>
-        </button>
-      </div>
-
       <AnimatePresence>
         {toast ? (
           <motion.div

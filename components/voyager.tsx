@@ -8,7 +8,8 @@ import { useVitals } from "@/lib/use-vitals";
 import { isHot } from "@/lib/vitals";
 import { cn } from "@/lib/utils";
 import { ZarifSprite } from "@/components/zarif-sprite";
-import { MascotRoom } from "@/components/mascot-room";
+import { MascotRoom, type Kopi } from "@/components/mascot-room";
+import { useWeather } from "@/lib/use-weather";
 
 /*
  * voyager: the laptop that actually hosts this site, as a 22×18 pixel mascot.
@@ -57,10 +58,19 @@ function Pixel({ p, className }: { p: Px; className?: string }) {
   return <rect x={x} y={y} width={w} height={h} className={className} />;
 }
 
+/** Kopi through the day: full in the morning, half after lunch, empty by evening, a second cup late at night. */
+function kopiFor(hour: number): Kopi {
+  if (hour >= 7 && hour < 12) return "full";
+  if (hour >= 12 && hour < 18) return "half";
+  if (hour >= 22) return "double";
+  return "empty";
+}
+
 export function Voyager() {
   const minute = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const { state, up, total } = summarize(useStatus());
   const vitals = useVitals();
+  const weather = useWeather();
   const hot = isHot(vitals);
   const [reaction, setReaction] = useState<"happy" | "shock" | "groggy" | null>(null);
   const [typing, setTyping] = useState(false);
@@ -267,7 +277,12 @@ export function Voyager() {
         ) : null}
       </div>
       <div className="pointer-events-auto relative flex items-end gap-1 rounded-xl border-2 border-foreground px-2 pt-7 pb-0.5 shadow-[4px_4px_0_var(--accent)] sm:pt-10">
-        <MascotRoom night={minute === null ? false : isDarkOutside(minute)} />
+        <MascotRoom
+          night={minute === null ? false : isDarkOutside(minute)}
+          sky={weather?.ok ? weather.sky : "clear"}
+          serviceDown={state === "degraded"}
+          kopi={kopiFor(klang?.hour ?? 9)}
+        />
       <button
         type="button"
         onClick={onZarif}

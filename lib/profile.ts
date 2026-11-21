@@ -13,6 +13,8 @@ export const profile = {
   githubLabel: "github.com/aimanzarif",
   cvHref: "/docs/zarif-nur-aiman-cv.pdf",
   cvLabel: "Download CV",
+  /** One line about what you're up to lately. Edit whenever it changes. */
+  now: "settling in at ServerFreak, doing the Microsoft full-stack cert, and kacau-ing the homelab every night.",
   intro:
     "Hai, I'm Zarif. Quiet sikit at first, but once you know me, very the easygoing one. By day I fix other people's problems at ServerFreak. By night I run a RHEL laptop in Klang that hosts this whole site, because VPS also need money what, and the laptop already there.",
 } as const;

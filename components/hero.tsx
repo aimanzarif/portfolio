@@ -26,7 +26,13 @@ export function Hero() {
               </span>
               <span className="css-wipe inline-block bg-accent px-[0.12em] text-accent-foreground">running.</span>
             </h1>
-            <p className="css-fade-up mt-10 max-w-xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
+            <p className="css-fade-up mt-6 flex max-w-xl items-baseline gap-2 font-mono text-sm text-muted-foreground">
+              <span className="led relative top-[-1px] inline-block size-2 shrink-0 rounded-full bg-accent" aria-hidden />
+              <span>
+                <span className="font-bold text-foreground">now:</span> {profile.now}
+              </span>
+            </p>
+            <p className="css-fade-up mt-6 max-w-xl text-lg leading-8 text-muted-foreground md:text-xl md:leading-9">
               {profile.intro}
             </p>
             <div className="css-fade-up mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">

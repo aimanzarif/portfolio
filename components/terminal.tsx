@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type R
 import { useReducedMotion } from "motion/react";
 import { profile, projects } from "@/lib/profile";
 import type { StatusReport } from "@/lib/status";
-import { findEgg } from "@/lib/eggs";
+import { EGGS, eggHints, findEgg, foundEggs } from "@/lib/eggs";
 import { emitVoyager } from "@/lib/voyager-events";
 import { GUESTBOOK_MAX, GuestbookSign, guestbookList } from "@/components/guestbook";
 
@@ -49,7 +49,7 @@ async function statusLine(): Promise<ReactNode> {
 
 const HIDDEN = new Set(["sudo", "rm", "kopi", "teh", "coffee", "makan", "lunch", "travel", "exit", "logout", "neofetch", "hello", "hi", "hai"]);
 
-const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "open", "status", "ping", "ssh", "guestbook", "history", "cv", "contact", "clear"];
+const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "open", "status", "ping", "ssh", "guestbook", "eggs", "history", "cv", "contact", "clear"];
 const ARGS: Record<string, string[]> = {
   open: projects.map((p) => p.id),
   cd: ["projects", "homelab", "secrets"],
@@ -125,6 +125,22 @@ function run(raw: string, history: readonly string[] = []): ReactNode | Promise<
   }
 
   switch (head) {
+    case "eggs": {
+      const found = foundEggs();
+      return (
+        <span className="block">
+          <span className="block">
+            {found.length === EGGS.length ? "semua dah jumpa. respect." : `${found.length}/${EGGS.length} easter eggs found. hints:`}
+          </span>
+          {EGGS.map((egg) => (
+            <span key={egg} className={found.includes(egg) ? "block text-muted-foreground line-through" : "block"}>
+              {found.includes(egg) ? "[x] " : "[ ] "}
+              {eggHints[egg]}
+            </span>
+          ))}
+        </span>
+      );
+    }
     case "help":
       return (
         <span className="whitespace-pre-wrap">
@@ -135,6 +151,7 @@ status        live service status
 ping          measure the trip to my laptop
 ssh zarif     talk to me (opens your email)
 guestbook     read the guestbook (sign: guestbook sign <message>)
+eggs          easter egg progress, with hints
 history       what you typed so far
 cv            download my cv
 contact       how to reach me

@@ -58,6 +58,12 @@ export function replayEgg(egg: Egg) {
   toastListeners.forEach((fn) => fn(eggMessages[egg], found.length));
 }
 
+/** Eggs found so far (for the terminal's `eggs` command). */
+export function foundEggs(): readonly Egg[] {
+  ensureLoaded();
+  return found;
+}
+
 export function onEggFound(fn: (message: string, count: number) => void) {
   toastListeners.add(fn);
   return () => {

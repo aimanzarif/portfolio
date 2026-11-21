@@ -407,6 +407,17 @@ body {
 .voyager-key { animation: voyager-key 0.35s steps(2) infinite; }
 .voyager-drop { animation: voyager-drop 1.4s ease-in infinite; transform-box: fill-box; }
 .voyager-z { animation: voyager-z 2.4s ease-out infinite; transform-box: fill-box; }
+@keyframes room-rain {
+  from { transform: translateY(-3px); }
+  to { transform: translateY(10px); }
+}
+.room-rain { animation: room-rain 0.9s linear infinite; }
+@keyframes room-flash {
+  0%, 79%, 82%, 85%, 100% { opacity: 0; }
+  80% { opacity: 0.85; }
+  83% { opacity: 0.55; }
+}
+.room-flash { opacity: 0; animation: room-flash 7s steps(1, end) infinite; }
 .voyager-pop { animation: voyager-pop 0.25s ease-out both; }
 
 @keyframes caret-blink {
@@ -462,7 +473,7 @@ body {
   .marquee-track { animation: none; }
   .terminal-invite, .packet, .vent-bar, .css-rise, .css-wipe, .css-fade-up,
   .bulb-swing, .bulb-flicker .bulb-glass, .bulb-flicker .bulb-rays,
-  .voyager-bob, .voyager-bob-slow, .voyager-bob-alt, .voyager-shake, .voyager-key, .voyager-drop, .voyager-z, .voyager-pop { animation: none !important; }
+  .voyager-bob, .voyager-bob-slow, .voyager-bob-alt, .voyager-shake, .voyager-key, .voyager-drop, .voyager-z, .voyager-pop, .room-rain, .room-flash { animation: none !important; }
   .packet { display: none; }
   .lift-card { transition: none; }
 
