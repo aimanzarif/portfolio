@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { EGGS, eggHints, findEgg, onEggFound, useEggs } from "@/lib/eggs";
+import { launchRocket } from "@/lib/launch";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
@@ -32,7 +33,8 @@ export function EasterEggs() {
       progress = key === KONAMI[progress] ? progress + 1 : key === KONAMI[0] ? 1 : 0;
       if (progress === KONAMI.length) {
         progress = 0;
-        findEgg("konami");
+        launchRocket(); // every time
+        findEgg("konami"); // counts (and toasts) only the first time
       }
     };
     window.addEventListener("keydown", onKey);

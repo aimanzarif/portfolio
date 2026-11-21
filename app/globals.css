@@ -363,6 +363,16 @@ body {
   mix-blend-mode: normal;
 }
 
+/* Konami rocket flame */
+@keyframes rocket-flame {
+  0%, 100% { transform: scaleY(1) scaleX(1); }
+  25% { transform: scaleY(1.25) scaleX(0.9); }
+  50% { transform: scaleY(0.85) scaleX(1.08); }
+  75% { transform: scaleY(1.15) scaleX(0.95); }
+}
+
+.rocket-flame { animation: rocket-flame 0.12s linear infinite; }
+
 /* voyager, the mascot */
 @keyframes voyager-bob {
   0%, 100% { transform: translateY(0); }

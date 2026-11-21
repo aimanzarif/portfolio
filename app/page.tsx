@@ -3,6 +3,7 @@ import { Hero } from "@/components/hero";
 import { InPageNav } from "@/components/in-page-nav";
 import { EasterEggs } from "@/components/easter-eggs";
 import { Voyager } from "@/components/voyager";
+import { RocketLaunch } from "@/components/rocket-launch";
 import {
   Contact,
   Education,
@@ -19,6 +20,7 @@ export default function Home() {
       <InPageNav />
       <EasterEggs />
       <Voyager />
+      <RocketLaunch />
       <div className="relative z-10">
         <Header />
         <main>
