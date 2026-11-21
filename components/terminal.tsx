@@ -262,7 +262,7 @@ export function Terminal() {
   const nextId = useRef(0);
   const booted = useRef(false);
   const scroller = useRef<HTMLDivElement>(null);
-  const input = useRef<HTMLInputElement>(null);
+  const input = useRef<HTMLTextAreaElement>(null);
 
   // Boot sequence: commands are typed out, outputs appear whole. Skipped for reduced motion.
   useEffect(() => {
@@ -377,7 +377,13 @@ export function Terminal() {
     }
   };
 
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    // The prompt is a textarea so long commands wrap; Enter still runs the command.
+    if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+      return;
+    }
     // Tab completes; on an empty prompt it stays a normal Tab so keyboard users can move on.
     if (event.key === "Tab" && value.trim()) {
       event.preventDefault();
@@ -444,7 +450,7 @@ export function Terminal() {
             </div>
           ),
         )}
-        <form onSubmit={onSubmit} className="mt-2 flex items-center gap-2">
+        <form onSubmit={onSubmit} className="mt-2 flex items-start gap-2">
           <label htmlFor="terminal-input" className="sr-only">
             Type a command. Try help.
           </label>
@@ -452,19 +458,20 @@ export function Terminal() {
             $
           </span>
           <div className="relative min-w-0 flex-1 overflow-hidden">
-            <div aria-hidden className="pointer-events-none whitespace-pre text-foreground">
+            <div aria-hidden className="pointer-events-none whitespace-pre-wrap text-foreground [overflow-wrap:anywhere]">
               {value}
               <span className="caret-blink inline-block h-[1.15em] w-[0.6em] translate-y-[0.2em] bg-accent" />
               {!value ? (
                 <span className="ml-2 text-muted-foreground/60">{awaitingName !== null ? "your name (optional)" : "type help"}</span>
               ) : null}
             </div>
-            <input
+            <textarea
               ref={input}
               id="terminal-input"
+              rows={1}
               value={value}
               onChange={(event) => {
-                setValue(event.target.value);
+                setValue(event.target.value.replace(/[\r\n]+/g, " "));
                 emitVoyager({ type: "typing" });
               }}
               onKeyDown={onKeyDown}
@@ -474,7 +481,7 @@ export function Terminal() {
               autoCorrect="off"
               spellCheck={false}
               title={PROMPT}
-              className="absolute inset-0 w-full bg-transparent text-transparent caret-transparent outline-none selection:bg-accent/30"
+              className="absolute inset-0 h-full w-full resize-none overflow-hidden bg-transparent p-0 font-[inherit] leading-[inherit] whitespace-pre-wrap text-transparent caret-transparent outline-none [overflow-wrap:anywhere] selection:bg-accent/30"
             />
           </div>
         </form>
