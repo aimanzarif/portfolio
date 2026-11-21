@@ -51,7 +51,10 @@ const nextConfig: NextConfig = {
       { source: "/projects/:path*", headers: cache(7 * DAY, 30 * DAY) },
       { source: "/:file(.*\\.(?:png|jpg|jpeg|webp|svg))", headers: cache(7 * DAY, 30 * DAY) },
       // CV and sample report: short, so a new CV shows up within the hour.
-      { source: "/docs/:path*", headers: cache(3600, DAY) },
+      {
+        source: "/docs/:path*",
+        headers: [...cache(3600, DAY), { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
+      },
       // Icons and link-preview image are generated at build time.
       { source: "/icon.svg", headers: cache(DAY, 7 * DAY) },
       { source: "/favicon.ico", headers: cache(DAY, 7 * DAY) },

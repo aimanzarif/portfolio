@@ -1,34 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { renderTurnstile } from "@/lib/turnstile-client";
 
 /* Terminal guestbook: list approved messages, and a sign flow with Cloudflare Turnstile. */
 
 type PublicEntry = { id: string; name: string; message: string; createdAt: string };
 type Meta = { enabled: boolean; siteKey: string | null; entries: PublicEntry[]; limits: { message: number; name: number } };
 
-type TurnstileApi = {
-  render: (el: HTMLElement, options: Record<string, unknown>) => string;
-  remove: (id: string) => void;
-};
-
 export const GUESTBOOK_MAX = 140;
-
-let scriptPromise: Promise<void> | null = null;
-function loadTurnstile() {
-  scriptPromise ??= new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => {
-      scriptPromise = null;
-      reject(new Error("turnstile failed to load"));
-    };
-    document.head.appendChild(script);
-  });
-  return scriptPromise;
-}
 
 function ago(iso: string) {
   const s = Math.max(0, (Date.now() - Date.parse(iso)) / 1000);
@@ -77,7 +57,7 @@ export function GuestbookSign({ message, name }: { message: string; name: string
 
   useEffect(() => {
     let alive = true;
-    let widget: string | undefined;
+    let cleanup: (() => void) | undefined;
 
     const submit = async (token: string) => {
       setStatus("sending");
@@ -115,34 +95,25 @@ export function GuestbookSign({ message, name }: { message: string; name: string
         await submit("dev"); // local development only; the server rejects this in production
         return;
       }
+      if (!alive || !box.current) return;
+      setStatus("captcha");
       try {
-        await loadTurnstile();
+        const remove = await renderTurnstile(box.current, meta.siteKey, (token) => submit(token), () => {
+          setError(ERRORS.captcha_failed);
+          setStatus("error");
+        });
+        if (alive) cleanup = remove;
+        else remove();
       } catch {
         if (!alive) return;
         setError("couldn't load the bot check. adblocker maybe?");
         setStatus("error");
-        return;
       }
-      const turnstile = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
-      if (!alive || !box.current || !turnstile) return;
-      setStatus("captcha");
-      const dark = document.documentElement.classList.contains("dark") ||
-        (!document.documentElement.classList.contains("light") && window.matchMedia("(prefers-color-scheme: dark)").matches);
-      widget = turnstile.render(box.current, {
-        sitekey: meta.siteKey,
-        theme: dark ? "dark" : "light",
-        callback: (token: string) => submit(token),
-        "error-callback": () => {
-          setError(ERRORS.captcha_failed);
-          setStatus("error");
-        },
-      });
     })();
 
     return () => {
       alive = false;
-      const turnstile = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
-      if (widget !== undefined) turnstile?.remove(widget);
+      cleanup?.();
     };
   }, [message, name]);
 

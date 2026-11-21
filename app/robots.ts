@@ -11,10 +11,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-      },
-      {
-        userAgent: "Googlebot",
-        allow: "/",
+        disallow: ["/docs/", "/api/"],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

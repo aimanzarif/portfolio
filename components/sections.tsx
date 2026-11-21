@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { CloudflareEmailOff } from "@/components/cloudflare-email-off";
+import { PhoneReveal } from "@/components/phone-reveal";
 import { ExperienceStreams, TicketQueue } from "@/components/sections-client";
 import { SplitText, Stamp } from "@/components/motion-bits";
 import { Reveal } from "@/components/reveal";
@@ -417,7 +418,7 @@ export function Contact() {
           <a href={profile.cvHref} target="_blank" rel="noreferrer">
             CV (PDF) ↗
           </a>
-          <a href={profile.phoneHref}>{profile.phone}</a>
+          <PhoneReveal label="Phone (show number)" />
         </div>
         <p className="mt-10 pb-[env(safe-area-inset-bottom)] font-mono text-xs">
           © {new Date().getFullYear()} {profile.shortName} · Served from a laptop in Klang. If down, probably updating lah,

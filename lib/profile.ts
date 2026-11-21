@@ -4,8 +4,6 @@ export const profile = {
   firstName: "Zarif",
   title: "IT Support & QA",
   location: "Klang, Malaysia",
-  phone: "+60 11-19167843",
-  phoneHref: "tel:+601119167843",
   email: "zarif@zarep.my",
   linkedin: "https://www.linkedin.com/in/zarif-nur-aiman",
   linkedinLabel: "linkedin.com/in/zarif-nur-aiman",

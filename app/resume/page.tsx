@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
 import { PrintButton } from "@/components/print-button";
+import { PhoneReveal } from "@/components/phone-reveal";
 import {
   certifications,
   currentRole,
@@ -56,9 +57,7 @@ export default function ResumePage() {
               </a>
             </li>
             <li>
-              <a href={profile.phoneHref} className="underline underline-offset-4">
-                {profile.phone}
-              </a>
+              <PhoneReveal label="show phone number" className="underline underline-offset-4" />
             </li>
             <li>
               <a href={profile.linkedin} className="underline underline-offset-4">
