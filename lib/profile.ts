@@ -74,7 +74,7 @@ export const homelab = {
       body: "GitHub Actions to GHCR, then k3s on a KVM guest, then Argo CD. Slowly lah, one by one.",
     },
   ],
-  statusHref: "https://uptimekuma.zarep.my",
+  statusHref: "https://uptimekuma.zarep.my/status/zarep",
 } as const;
 
 export const ticker = [
