@@ -50,10 +50,10 @@ export function StatusPanel({ statusHref }: { statusHref: string }) {
       </div>
 
       {report === null ? (
-        <p className="mt-4 font-mono text-sm text-muted-foreground">pinging the laptop...</p>
+        <p className="mt-4 font-mono text-sm text-muted-foreground">ping-ing the laptop, wait ah...</p>
       ) : !report.ok || report.monitors.length === 0 ? (
         <p className="mt-4 font-mono text-sm text-muted-foreground">
-          Status feed is offline. Ironic, I know. The full page might still work.
+          Status feed offline. Ironic, I know lah. The full page might still work.
         </p>
       ) : (
         <ul className="mt-4 divide-y divide-line">

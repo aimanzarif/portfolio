@@ -6,15 +6,15 @@ export const EGGS = ["terminal", "konami", "power"] as const;
 export type Egg = (typeof EGGS)[number];
 
 export const eggHints: Record<Egg, string> = {
-  terminal: "The terminal knows more than `help` admits.",
-  konami: "Gamers from the 80s know a certain sequence.",
-  power: "Every server has a power button. Mine is blinking at you.",
+  terminal: "The terminal knows more than what `help` say.",
+  konami: "Old-school gamers confirm know this one sequence.",
+  power: "Every server got power button. Mine is blinking at you.",
 };
 
 const eggMessages: Record<Egg, string> = {
-  terminal: "Found one: the terminal keeps secrets.",
-  konami: "CHEAT ACTIVATED: +30 lives. Still not enough for a holiday.",
-  power: "That's the power button. Please don't.",
+  terminal: "Eh, you found one. The terminal got secrets.",
+  konami: "CHEAT ACTIVATED: +30 lives. Still not enough to go holiday though.",
+  power: "Oi, that one power button. Please don't lah.",
 };
 
 const KEY = "zarep-eggs";
@@ -46,7 +46,7 @@ export function findEgg(egg: Egg) {
   listeners.forEach((fn) => fn());
   const message =
     found.length === EGGS.length
-      ? `${eggMessages[egg]} That's all ${EGGS.length}. You'd be great at QA. Email me.`
+      ? `${eggMessages[egg]} All ${EGGS.length} dah jumpa! You can be QA already. Email me.`
       : eggMessages[egg];
   toastListeners.forEach((fn) => fn(message, found.length));
 }

@@ -59,7 +59,7 @@ export function Work() {
               <span className="mb-2 flex items-center gap-2 font-mono text-sm font-bold tracking-wide uppercase">
                 <span className="led size-2.5 rounded-full bg-accent" aria-hidden />2 live right now
               </span>
-              Go on, click them. They run on my laptop, and I&apos;ll know if they go down.
+              Click lah, don&apos;t shy. They run on my laptop, and if they go down, confirm I know one.
             </p>
           </div>
         </Reveal>
@@ -120,12 +120,12 @@ export function Work() {
                       <div className={cn("rounded-xl border-2 border-dashed p-6 font-mono text-sm", style.frame)}>
                         <p className="font-bold">BUG PRIORITY, MY WAY</p>
                         <ol className={cn("mt-4 space-y-2", style.muted)}>
-                          <li>1. The app is broken → fix now</li>
-                          <li>2. The app is wrong → fix next</li>
-                          <li>3. The app is a bit ugly → fix later</li>
+                          <li>1. App rosak → fix now</li>
+                          <li>2. App salah → fix next</li>
+                          <li>3. App ugly sikit → later lah</li>
                         </ol>
                         <p className={cn("mt-4", style.muted)}>
-                          Cosmetic bugs are real bugs. They just wait their turn.
+                          Cosmetic bug also bug. Just need to queue.
                         </p>
                       </div>
                     )}
@@ -365,8 +365,8 @@ export function Contact() {
             <SplitText text={"Something\nbroken? Jom."} />
           </h2>
           <p className="mt-8 max-w-xl text-lg">
-            Hiring, collaborating, or just want to talk servers. Email works best. Introvert, but a very responsive
-            one.
+            Hiring, collab, or just want to borak pasal servers. Email is best. Introvert, but I reply fast one,
+            promise.
           </p>
           <CloudflareEmailOff>
             <a
@@ -390,8 +390,8 @@ export function Contact() {
           <a href={profile.phoneHref}>{profile.phone}</a>
         </div>
         <p className="mt-10 pb-[env(safe-area-inset-bottom)] font-mono text-xs">
-          © {new Date().getFullYear()} {profile.shortName} · Served from a laptop in Klang. If it&apos;s down, it&apos;s
-          probably updating.
+          © {new Date().getFullYear()} {profile.shortName} · Served from a laptop in Klang. If down, probably updating lah,
+          relax.
         </p>
       </Container>
     </section>

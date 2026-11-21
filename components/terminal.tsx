@@ -12,10 +12,10 @@ const PROMPT = "zarep@voyager:~$";
 
 const boot: { kind: Line["kind"]; text: string; hint?: boolean }[] = [
   { kind: "cmd", text: "whoami" },
-  { kind: "out", text: "zarif. IT support. fixes things." },
+  { kind: "out", text: "zarif. IT support. fix things one." },
   { kind: "cmd", text: "uptime --pretty" },
-  { kind: "out", text: "up, somehow. scroll to the homelab for real numbers." },
-  { kind: "out", text: "psst. this is a real terminal. type `help` ↓", hint: true },
+  { kind: "out", text: "still up, somehow. scroll down to the homelab for real numbers." },
+  { kind: "out", text: "psst. this one real terminal ok. type `help` ↓", hint: true },
 ];
 
 const bootBody = (line: (typeof boot)[number], text = line.text): ReactNode =>
@@ -37,11 +37,11 @@ async function statusLine(): Promise<ReactNode> {
   try {
     const res = await fetch("/api/status");
     const report = (await res.json()) as StatusReport;
-    if (!report.ok) return "status feed is offline. ironic, i know.";
+    if (!report.ok) return "status feed offline. ironic, i know lah.";
     const up = report.monitors.filter((m) => m.status === "up").length;
-    return `${up}/${report.monitors.length} services up. ${up === report.monitors.length ? "all green, alhamdulillah." : "someone's having a bad day. probably me."}`;
+    return `${up}/${report.monitors.length} services up. ${up === report.monitors.length ? "all green, alhamdulillah." : "aiyo, someone having a bad day. probably me."}`;
   } catch {
-    return "couldn't reach the status feed. the laptop might be updating.";
+    return "cannot reach the status feed. laptop updating kot.";
   }
 }
 
@@ -61,12 +61,12 @@ function run(raw: string): ReactNode | Promise<ReactNode> | "clear" {
   if (cmd === "clear") return "clear";
 
   if (cmd.startsWith("sudo")) {
-    return "zarif is not in the sudoers file. this incident will be reported. (to me. i'm the admin.)";
+    return "zarif is not in the sudoers file. this incident will be reported. (to me lah. i'm the admin.)";
   }
   if (cmd.startsWith("rm ")) {
     return (
       <>
-        not again. ask me about{" "}
+        eh, not again. ask me about{" "}
         <button type="button" className="text-accent underline underline-offset-4" onClick={() => jump("incident")}>
           june 2026
         </button>
@@ -86,36 +86,36 @@ status        live service status
 cv            download my cv
 contact       how to reach me
 clear         clean slate
-...and a few i'm not telling you about.`}
+...and a few more, but i won't tell lah.`}
         </span>
       );
     case "whoami":
-      return `${profile.shortName}. IT support at ServerFreak, Klang. shy at first, easygoing after. likes fixing things more than breaking them.`;
+      return `${profile.shortName}. IT support at ServerFreak, Klang. shy sikit at first, then ok already. prefer fixing things than breaking them.`;
     case "ls":
       if (arg === "projects" || arg === "projects/") return projects.map((p) => p.id).join("   ");
-      if (arg.startsWith("secret")) return "ls: cannot open directory 'secrets/': Permission denied. nice try.";
+      if (arg.startsWith("secret")) return "ls: cannot open directory 'secrets/': Permission denied. nice try, boss.";
       return "projects/   homelab/   cv.pdf   secrets/";
     case "cd":
-      if (arg.startsWith("secret")) return "permission denied. still no.";
+      if (arg.startsWith("secret")) return "permission denied. still cannot lah.";
       if (arg.startsWith("homelab")) {
         jump("homelab");
-        return "taking you there...";
+        return "jom, going there...";
       }
       if (arg.startsWith("projects")) {
         jump("work");
-        return "taking you there...";
+        return "jom, going there...";
       }
-      return `cd: ${arg || "~"}: you're already home.`;
+      return `cd: ${arg || "~"}: you already at home what.`;
     case "cat":
-      if (arg.startsWith("secret")) return "cat: secrets: Permission denied. the cat says no.";
-      if (arg === "cv.pdf") return <ExtLink href={profile.cvHref}>it&apos;s a pdf, cat won&apos;t help. open it here.</ExtLink>;
-      return `cat: ${arg || "?"}: no such file. try \`ls\`.`;
+      if (arg.startsWith("secret")) return "cat: secrets: Permission denied. kucing pun cakap tak boleh.";
+      if (arg === "cv.pdf") return <ExtLink href={profile.cvHref}>pdf one lah, cat cannot help. open here.</ExtLink>;
+      return `cat: ${arg || "?"}: no such file. try \`ls\` first.`;
     case "open": {
       const project = projects.find((p) => p.id === arg || p.name.toLowerCase() === arg);
       const live = project?.links.find((l) => l.label === "Live demo");
       if (project && live) return <ExtLink href={live.href}>opening {project.name} →</ExtLink>;
-      if (project) return `${project.name} isn't public, but it's in the work section.`;
-      return "open what? try `open smartroute` or `open ikango`.";
+      if (project) return `${project.name} not public, but got in the work section.`;
+      return "open what ah? try `open smartroute` or `open ikango`.";
     }
     case "status":
     case "uptime":
@@ -126,8 +126,8 @@ clear         clean slate
     case "email":
       return (
         <>
-          <ExtLink href={`mailto:${profile.email}`}>{profile.email}</ExtLink> works best. introvert, but a very
-          responsive one.
+          <ExtLink href={`mailto:${profile.email}`}>{profile.email}</ExtLink> is best. introvert, but i reply
+          fast one.
         </>
       );
     case "date":
@@ -135,15 +135,15 @@ clear         clean slate
     case "kopi":
     case "teh":
     case "coffee":
-      return "brewing... kurang manis, as requested.";
+      return "bancuh-ing... kurang manis, as requested boss.";
     case "makan":
     case "lunch":
-      return "out for lunch. back in 30 minutes. (malaysian minutes.)";
+      return "keluar makan jap. back in 30 minutes. (malaysian minutes lah.)";
     case "travel":
-      return "error: insufficient funds. retry after payday.";
+      return "error: insufficient funds. tunggu gaji masuk first.";
     case "exit":
     case "logout":
-      return "there's no escape. scroll down instead.";
+      return "where you want to go? scroll down lah.";
     case "hello":
     case "hi":
     case "hai":
@@ -161,7 +161,7 @@ Shell:   bash, and patience`}
         </span>
       );
     default:
-      return `command not found: ${head}. try \`help\`.`;
+      return `command not found: ${head}. try \`help\` lah.`;
   }
 }
 

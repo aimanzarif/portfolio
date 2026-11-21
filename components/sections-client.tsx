@@ -74,7 +74,7 @@ export function TicketQueue({
       <div className="flex items-center justify-between border-b-2 border-line px-5 py-3 font-mono text-xs text-muted-foreground">
         <span className="font-bold text-foreground">QUEUE · a normal day</span>
         <span aria-live="polite" className={open === 0 ? "font-bold text-accent" : undefined}>
-          {open === 0 ? "0 open. kopi time." : `${open} open`}
+          {open === 0 ? "0 open. Kopi time!" : `${open} open`}
         </span>
       </div>
       <ul className="divide-y divide-line">

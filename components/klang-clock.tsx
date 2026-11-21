@@ -36,11 +36,11 @@ function klangParts(minute: number) {
 
 function mood(hour: number, weekend: boolean) {
   if (hour < 7) return "asleep";
-  if (hour < 9) return weekend ? "sleeping in" : "commuting";
+  if (hour < 9) return weekend ? "still sleeping" : "stuck in jam";
   if (hour >= 12 && hour < 14) return "makan time";
-  if (hour < 18) return weekend ? "weekend mode" : "at work";
+  if (hour < 18) return weekend ? "weekend mode, lepak" : "at work";
   if (hour < 20) return "makan, then homelab";
-  return "tinkering with the homelab";
+  return "kacau the homelab";
 }
 
 /** "KLANG 3:11pm · at work (probably) · 4/4 up" */

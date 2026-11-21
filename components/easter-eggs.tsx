@@ -14,7 +14,7 @@ export function EasterEggs() {
 
   useEffect(() => {
     console.log(
-      "%cOi, curious one.\n%cThere are 3 easter eggs on this page. None of them are in here, sorry.\nHiring? zarif@zarep.my",
+      "%cOi, curious one.\n%cThere are 3 easter eggs on this page. None of them in here, sorry ah.\nHiring? zarif@zarep.my",
       "font-size:16px;font-weight:bold",
       "font-size:12px",
     );
@@ -57,7 +57,7 @@ export function EasterEggs() {
               exit={{ opacity: 0, y: 6 }}
               className="w-72 rounded-xl border-2 border-line bg-card p-4 font-mono text-[13px] shadow-[6px_6px_0_var(--accent)]"
             >
-              <p className="font-bold">{all ? "All found. Respect." : "Hints, since you asked"}</p>
+              <p className="font-bold">{all ? "Semua dah jumpa. Respect." : "Hints, since you ask"}</p>
               <ul className="mt-3 space-y-2.5">
                 {EGGS.map((egg) => {
                   const done = found.includes(egg);
