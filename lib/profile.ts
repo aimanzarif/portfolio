@@ -248,6 +248,7 @@ export const navItems = [
   { href: "#helpdesk", label: "Help desk", path: "help-desk" },
   { href: "#homelab", label: "Homelab", path: "homelab" },
   { href: "#experience", label: "Experience", path: "experience" },
+  { href: "#travel", label: "Travel", path: "travel" },
 ] as const;
 
 /** Plain-English versions for the recruiter view (/resume). */

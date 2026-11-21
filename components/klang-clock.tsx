@@ -33,10 +33,10 @@ export function KlangClock({ className, compact = false }: { className?: string;
         aria-hidden
       />
       <span className="text-foreground">{time} in Klang</span>
-      <span aria-hidden className={compact ? "hidden 2xl:inline" : undefined}>
+      <span aria-hidden className={compact ? "hidden min-[1680px]:inline" : undefined}>
         ·
       </span>
-      <span className={compact ? "hidden 2xl:inline" : undefined}>{mood(hour, weekend)}</span>
+      <span className={compact ? "hidden min-[1680px]:inline" : undefined}>{mood(hour, weekend)}</span>
       <span className="sr-only">(probably). {statusText}.</span>
     </a>
   );

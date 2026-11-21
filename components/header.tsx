@@ -18,7 +18,7 @@ export function Header() {
   const [progress, setProgress] = useState(0);
   const active = useActiveSection(SECTION_IDS);
   const presses = useRef<number[]>([]);
-  const currentPath = navItems.find((item) => item.href === `#${active}`)?.path ?? (active === "contact" || active === "travel" ? active : "");
+  const currentPath = navItems.find((item) => item.href === `#${active}`)?.path ?? (active === "contact" ? "contact" : "");
 
   const pressPower = () => {
     const now = Date.now();
@@ -118,7 +118,7 @@ export function Header() {
             })}
           </nav>
           <div className="ml-auto flex items-center gap-1.5 lg:ml-3">
-            <KlangClock className="hidden xl:flex" compact />
+            <KlangClock className="hidden min-[1400px]:flex" compact />
             <ModeToggle mode="fun" className="hidden xl:flex" />
             <ThemeToggle />
             <a
