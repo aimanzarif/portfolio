@@ -13,6 +13,8 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
+      UPTIME_KUMA_URL: ${UPTIME_KUMA_URL:-https://uptimekuma.zarep.my}
+      UPTIME_KUMA_SLUG: ${UPTIME_KUMA_SLUG:-zarep}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://zarep.my}
     restart: unless-stopped
     healthcheck:

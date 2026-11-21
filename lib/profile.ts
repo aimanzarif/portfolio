@@ -13,57 +13,8 @@ export const profile = {
   githubLabel: "github.com/aimanzarif",
   cvHref: "/docs/zarif-nur-aiman-cv.pdf",
   cvLabel: "Download CV",
-  availability: "IT Support at ServerFreak Technologies",
   intro:
-    "IT support by day at ServerFreak. Tester and junior developer for a year at AMTIS. And the person behind a RHEL laptop in Klang that hosts everything on this domain.",
-  summary:
-    "Information Systems Engineering graduate with a 3.56 CGPA and CPRE certification, following a one-year internship delivering manual testing, REST API development, and requirements documentation across six concurrent projects at AMTIS Solutions, a Malaysian software house. Experienced in writing structured test cases, logging defect reports, and validating API behaviour using Postman and Laravel within Agile SDLC/STLC workflows and GitLab-based version control. Looking to bring a detail-oriented QA mindset into a growth environment and develop test automation skills in Playwright and TypeScript.",
-  roles: [
-    "Manual Testing",
-    "API Testing",
-    "Requirements Engineering",
-    "Full-Stack Delivery",
-  ],
-  stats: [
-    { number: 3.56, decimalPlaces: 2, suffix: "", label: "Bachelor CGPA", hint: "Dean's List · 2 semesters" },
-    { number: 6, decimalPlaces: 0, suffix: "", label: "Concurrent projects", hint: "AMTIS internship" },
-    { number: 50, decimalPlaces: 0, suffix: "+", label: "Test cases logged", hint: "Jerai Hill mobile app" },
-    { number: 1, decimalPlaces: 0, suffix: " yr", label: "Industry experience", hint: "Junior Software Developer" },
-  ],
-  highlights: [
-    {
-      number: 40,
-      prefix: "~",
-      suffix: "%",
-      title: "Faster reporting",
-      detail:
-        "Automated Excel export pipelines on the YMBI client project, cutting manual reporting time.",
-    },
-    {
-      number: 30,
-      prefix: "~",
-      suffix: "%",
-      title: "Fewer change requests",
-      detail:
-        "CPRE-aligned SRS, URS, and API specs across four projects reduced stakeholder churn during development.",
-    },
-    {
-      number: 50,
-      prefix: "~",
-      suffix: "%",
-      title: "Less manual data entry",
-      detail:
-        "Configurable Excel import with real-time validation let clients bulk-upload structured data independently.",
-    },
-    {
-      number: 0,
-      prefix: "",
-      suffix: "",
-      title: "Critical escapes",
-      detail:
-        "Pre-release regression and edge-case testing on Jerai Hill supported zero critical defects in production.",
-    },
-  ],
+    "Hi, I'm Zarif. Quiet at first, easygoing once you know me. By day I fix other people's problems at ServerFreak. By night I run a RHEL laptop in Klang that hosts this whole site, because a VPS costs money and the laptop was already here.",
 } as const;
 
 export const currentRole = {
@@ -71,11 +22,38 @@ export const currentRole = {
   company: "ServerFreak Technologies Sdn. Bhd.",
   period: "July 2026 — now",
   location: "Klang, Selangor",
+  blurb:
+    "Tickets, live chat, and the occasional phone call where someone is literally waiting on the line. My favourite part of the job: someone shows up stuck and leaves unstuck. Even when they're not exactly nice about it.",
+} as const;
+
+/** A typical queue at the help desk. Titles are the problem as it arrives, `fix` is what it usually turns into. */
+export const tickets = [
+  { title: "Forgot password (again)", fix: "Reset, verified, done", channel: "Live chat" },
+  { title: "My website got hacked", fix: "Malware cleaning", channel: "Ticket" },
+  { title: "Email bounced / can't connect", fix: "Mail delivery and client fixes", channel: "Ticket" },
+  { title: "Server is slow", fix: "Server optimisation, SQL tuning", channel: "Ticket" },
+  { title: "WordPress shows a white screen", fix: "WordPress debugging", channel: "Ticket" },
+  { title: "Outlook is doing Outlook things", fix: "Microsoft 365 troubleshooting", channel: "Live chat" },
+  { title: "Phone ringing. Someone's on the line.", fix: "Fix it while they wait", channel: "Call" },
+] as const;
+
+export const incident = {
+  id: "INC-2026-06",
+  title: "The night I deleted SmartRoute.",
+  rows: [
+    { label: "When", value: "June 2026, at night (of course)" },
+    { label: "What happened", value: "I deleted SmartRoute from the server. By accident. Mostly." },
+    { label: "Root cause", value: "Me." },
+    { label: "Time to recover", value: "About 3 hours" },
+    { label: "Data lost", value: "None. Recovered all of it." },
+    { label: "Lesson", value: "Read the command twice before pressing Enter at night." },
+  ],
+  status: "Resolved. SmartRoute is back up, scroll up and click it.",
 } as const;
 
 export const homelab = {
   intro:
-    "Everything on this domain is hosted by me. The server only makes outbound connections through a Cloudflare Tunnel, so no ports are open to the internet.",
+    "Why self-host? Budget, honestly. I used what I already had: one Acer laptop with 32 GB of RAM and a lot of free evenings. Everything on this domain runs on it, and it only talks to the internet through an outbound Cloudflare Tunnel, so no ports are open.",
   rack: [
     { unit: "U04", tag: "EDGE", name: "Cloudflare Tunnel", spec: "DNS · WAF", tall: false },
     { unit: "U03", tag: "ROUTING", name: "Nginx Proxy Manager", spec: "1 host per app", tall: false },
@@ -85,7 +63,7 @@ export const homelab = {
   notes: [
     {
       title: "Watching it",
-      body: "Uptime Kuma, Netdata, and a Telegram alert when something looks off.",
+      body: "Uptime Kuma, Netdata, and a Telegram ping when something looks off. The live numbers are right there.",
     },
     {
       title: "Protecting it",
@@ -93,28 +71,32 @@ export const homelab = {
     },
     {
       title: "Learning next",
-      body: "GitHub Actions to GHCR, then k3s on a KVM guest, then Argo CD.",
+      body: "GitHub Actions to GHCR, then k3s on a KVM guest, then Argo CD. One thing at a time.",
     },
   ],
   statusHref: "https://uptimekuma.zarep.my",
 } as const;
 
 export const ticker = [
-  "Manual testing",
-  "API testing",
+  "Fixing things",
   "Linux",
+  "Email that won't send",
   "Docker",
+  "WordPress",
+  "SQL tuning",
   "Laravel",
-  "Next.js",
   "Cloudflare",
-  "Requirements",
+  "Manual testing",
+  "Kopi o kosong",
 ] as const;
 
 export const experience = {
-  role: "Junior Software Developer",
+  role: "Junior Software Developer (industrial attachment)",
   company: "AMTIS Solutions Sdn. Bhd.",
   period: "March 2025 — March 2026",
   location: "Malaysia",
+  blurb:
+    "Developer and tester at the same time, so I got to file bugs against my own code. Rule I worked by: anything that breaks the app gets fixed first, cosmetic stuff waits its turn.",
   bullets: [
     "Engineered 3 full-stack web modules for the YMBI client project using Laravel, Vue.js, and MySQL, reducing manual reporting time by approximately 40% through automated Excel export pipelines built with Maatwebsite.",
     "Executed end-to-end manual testing across iOS and Android platforms for the Jerai Hill project, documenting over 50 test cases and defects using structured STLC processes, achieving a defect detection rate that supported on-time UAT sign-off.",
@@ -124,30 +106,34 @@ export const experience = {
   ],
 } as const;
 
-export const projects = [
+export type ProjectLink = { label: string; href: string };
+
+export const projects: readonly {
+  id: string;
+  name: string;
+  tagline: string;
+  period: string;
+  role: string;
+  live: boolean;
+  story: string;
+  stack: readonly string[];
+  image?: { src: string; alt: string };
+  links: readonly ProjectLink[];
+}[] = [
   {
-    id: "gateway",
-    name: "Rule-Based API Gateway",
-    period: "September 2025 — February 2026",
-    stack: ["Laravel", "GitHub Actions", "DigitalOcean VPS", "OAuth"],
-    kind: "Engineering",
-    summary:
-      "A centralised, role-based API gateway that secures routing across internal services with OAuth, CI/CD, and production-grade documentation.",
-    bullets: [
-      "Developed a rule-based, role-based API gateway using Laravel to centralise and secure API routing across multiple internal services, enforcing authentication and access control across all registered endpoints.",
-      "Delivered a fully documented system accepted as an MJCS 2025 journal paper submission, with complete SRS and API documentation covering endpoint specifications, authentication flows, and business rules.",
-      "Used GitHub Actions to implement a CI/CD pipeline with automated deployment to DigitalOcean VPS, enabling zero-downtime production releases.",
-      "Applied Laravel Passport for OAuth-based API authentication in a live production environment, enforcing token-based access control across gateway endpoints to secure inter-service communication.",
-    ],
+    id: "smartroute",
+    name: "SmartRoute",
+    tagline: "One place to manage APIs.",
+    period: "Sep 2025 — Feb 2026",
+    role: "Built it",
+    live: true,
+    story:
+      "At AMTIS I noticed there wasn't one place to manage our APIs: who's calling what, how often, and whether they should be. So I built a rule and role-based API gateway for my final-year project. It's the one I deleted in June. It's fine now.",
+    stack: ["Laravel 12", "Passport", "Google OAuth", "Tailwind", "Alpine.js", "Docker"],
+    image: { src: "/projects/smartroute.webp", alt: "SmartRoute sign-in page" },
     links: [
-      {
-        label: "Live demo",
-        href: "https://smartroute.zarep.my",
-      },
-      {
-        label: "GitHub",
-        href: "https://github.com/aimanzarif/fyp-api-gateway",
-      },
+      { label: "Live demo", href: "https://smartroute.zarep.my" },
+      { label: "GitHub", href: "https://github.com/aimanzarif/fyp-api-gateway" },
       {
         label: "SRS",
         href: "https://github.com/aimanzarif/fyp-api-gateway/blob/main/public/docs/SRS%20SmartRoute_Zarif%20Nur%20Aiman.pdf",
@@ -159,100 +145,74 @@ export const projects = [
     ],
   },
   {
-    id: "ims",
-    name: "Internal Management System",
-    period: "September 2025 — February 2026",
-    stack: ["Laravel", "Vue.js", "MySQL", "Shadcn UI"],
-    kind: "Full-stack",
-    summary:
-      "Full-stack internal operations platform covering the SDLC from requirements through production, with self-serve Excel data workflows.",
-    bullets: [
-      "Developed full-stack features using Laravel as the backend, Vue.js with Shadcn UI as the frontend, and MySQL as the database, covering the full SDLC from requirements gathering to production deployment.",
-      "Delivered dynamic Excel import and export functionality with configurable column mapping using Maatwebsite, enabling non-technical users to upload and process structured data independently.",
-      "Used GitLab for version control and collaborative development, maintaining a structured branching strategy and conducting peer code reviews across a multi-developer team.",
-    ],
+    id: "ikango",
+    name: "ikanGO",
+    tagline: "Catch fish. Log fish.",
+    period: "Ongoing",
+    role: "Server admin",
+    live: true,
+    story:
+      "My friend is an angler and wanted a website to collect every fish he catches. He builds the app, I keep it alive: the Next.js client, the fish-recognition model API and the database all run on my laptop.",
+    stack: ["Next.js", "FastAPI", "ONNX", "PostgreSQL", "Docker"],
+    image: { src: "/projects/ikango.webp", alt: "ikanGO sign-in page over an underwater coral background" },
+    links: [{ label: "Live demo", href: "https://ikango.zarep.my" }],
   },
   {
     id: "jerai",
     name: "Jerai Hill Resort",
-    period: "March 2026 — May 2026",
-    stack: ["Manual Testing", "iOS", "Android", "STLC"],
-    kind: "QA",
-    summary:
-      "Structured mobile QA for a cross-platform resort app, with regression discipline that kept critical defects out of production.",
-    links: [
-      {
-        label: "Sample defect report",
-        href: "/docs/sample-defect-report.pdf",
-      },
-    ],
-    bullets: [
-      "Designed and executed structured manual test cases covering functional, regression, and exploratory scenarios for a cross-platform mobile application across iOS and Android devices.",
-      "Contributed to zero critical defects escaping to production across all tested releases through thorough pre-release regression testing and edge-case validation, following a modified waterfall delivery process.",
-      "Used structured Excel-based test logs to document defect reports with steps to reproduce, screenshots, and expected vs. actual results, supporting faster developer resolution and clear audit trails.",
-      "Applied STLC principles across multiple test cycles, validating UI consistency, navigation flows, and cross-device behaviour across varying screen sizes and OS versions.",
-    ],
+    tagline: "Mobile app QA, iOS and Android.",
+    period: "Mar 2026 — May 2026",
+    role: "Tester",
+    live: false,
+    story:
+      "Manual regression and edge-case testing across iOS and Android, written up as test cases and defect reports a developer can actually reproduce. No critical defects reached production across the releases I tested.",
+    stack: ["Manual testing", "Regression", "STLC", "iOS", "Android"],
+    links: [{ label: "Sample defect report", href: "/docs/sample-defect-report.pdf" }],
   },
-] as const;
+];
+
+export const alsoBuilt =
+  "Also built: an internal management system at AMTIS (Laravel, Vue.js, Shadcn UI, MySQL) with Excel import and export that non-technical staff could use on their own.";
 
 export const skillGroups = [
   {
-    id: "qa",
-    label: "Testing & QA",
-    items: [
-      "Manual Testing",
-      "Regression Testing",
-      "Exploratory Testing",
-      "API Testing",
-      "Test Case Authoring",
-      "Defect Reporting",
-      "SDLC",
-      "STLC",
-    ],
+    id: "support",
+    label: "Support & ops",
+    items: ["Email delivery", "Malware cleanup", "WordPress", "Microsoft 365", "cPanel / WHM", "SQL tuning"],
   },
   {
-    id: "languages",
-    label: "Languages",
-    items: ["PHP", "JavaScript", "TypeScript (basic)", "SQL"],
+    id: "qa",
+    label: "Testing & QA",
+    items: ["Manual testing", "Regression", "Exploratory", "API testing", "Test cases", "Defect reports"],
   },
   {
     id: "web",
-    label: "Web & Frameworks",
-    items: ["Laravel", "Vue.js", "Tailwind CSS", "HTML", "CSS", "Shadcn UI"],
-  },
-  {
-    id: "api",
-    label: "API & Backend",
-    items: ["RESTful APIs", "Postman", "Scramble", "Laravel Passport (OAuth)"],
+    label: "Build",
+    items: ["Laravel", "Vue.js", "Next.js", "PHP", "JavaScript", "TypeScript (basic)", "SQL"],
   },
   {
     id: "devops",
-    label: "DevOps & VCS",
-    items: ["Git", "GitHub Actions (CI/CD)", "GitLab", "Nginx", "DigitalOcean VPS"],
+    label: "Infra",
+    items: ["RHEL", "Docker", "Nginx", "Cloudflare", "Tailscale", "Git", "GitHub Actions"],
   },
   {
     id: "docs",
-    label: "Documentation",
-    items: ["SRS", "URS", "STD", "Microsoft Excel", "Microsoft Word", "StarUML"],
+    label: "Docs",
+    items: ["SRS", "URS", "API specs", "StarUML"],
   },
 ] as const;
 
 export const education = [
   {
     school: "Universiti Teknologi MARA (UiTM)",
-    credential:
-      "Bachelor of Information System Engineering (Hons.) Information Systems Engineering",
+    credential: "Bachelor of Information Systems Engineering (Hons.)",
     year: "2026",
-    cgpa: 3.56,
-    deansList: 2,
     meta: "CGPA 3.56 · Dean's List for two semesters",
   },
   {
     school: "Universiti Teknologi MARA (UiTM)",
     credential: "Diploma in Computer Science",
     year: "2023",
-    cgpa: 3.72,
-    deansList: 3,
     meta: "CGPA 3.72 · Dean's List for three semesters",
   },
 ] as const;
@@ -261,7 +221,7 @@ export const certifications = [
   {
     name: "Certified Professional Requirements Engineer Foundation Level (CPRE-FL)",
     year: "2024",
-    meta: "Certification ID: MY-CPRE-FL-2024-00036",
+    meta: "ID MY-CPRE-FL-2024-00036",
   },
   {
     name: "Microsoft Full-Stack Developer Professional Certificate",
@@ -271,13 +231,13 @@ export const certifications = [
 ] as const;
 
 export const languages = [
-  { name: "Bahasa Malaysia", level: "Native", proficiency: 100 },
-  { name: "English", level: "Conversational", proficiency: 72 },
+  { name: "Bahasa Melayu", level: "Native" },
+  { name: "English", level: "Conversational" },
 ] as const;
 
 export const navItems = [
   { href: "#work", label: "Work" },
+  { href: "#helpdesk", label: "Help desk" },
   { href: "#homelab", label: "Homelab" },
   { href: "#experience", label: "Experience" },
-  { href: "#education", label: "Education" },
 ] as const;

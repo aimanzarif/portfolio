@@ -1,13 +1,7 @@
 import { Container } from "@/components/site";
 import { Reveal } from "@/components/reveal";
+import { Terminal } from "@/components/terminal";
 import { profile, ticker } from "@/lib/profile";
-
-const terminal = [
-  { cmd: "whoami", out: "zarif, IT support, ex-QA" },
-  { cmd: "cat /etc/os-release | head -1", out: "Red Hat Enterprise Linux 10" },
-  { cmd: "docker ps --format names", out: "portfolio · ikango · smartroute" },
-  { cmd: "curl -sI zarep.my | head -1", out: "HTTP/2 200" },
-] as const;
 
 export function Hero() {
   return (
@@ -16,7 +10,7 @@ export function Hero() {
         <div className="min-w-0 flex-[999_1_38rem]">
           <Reveal>
             <p className="font-mono text-[13px] tracking-[0.06em] text-muted-foreground uppercase">
-              {profile.shortName} · {profile.title} · {profile.location}
+              {profile.firstName} · {profile.title} · {profile.location}
             </p>
             <h1 className="font-display mt-7 text-[clamp(3.5rem,10vw,9.5rem)] leading-[0.9] font-extrabold tracking-[-0.045em]">
               I keep things{" "}
@@ -32,7 +26,7 @@ export function Hero() {
                 href="#work"
                 className="inline-flex min-h-12 items-center rounded-full bg-foreground px-7 font-semibold text-background transition hover:opacity-90"
               >
-                See the work
+                See what I&apos;ve built
               </a>
               <a
                 href={profile.cvHref}
@@ -46,31 +40,7 @@ export function Hero() {
           </Reveal>
         </div>
 
-        <aside
-          aria-label="Terminal"
-          className="min-w-0 max-w-lg flex-[1_1_20rem] overflow-hidden rounded-xl border border-line bg-card"
-        >
-          <div className="flex items-center gap-2 border-b border-line px-4 py-3 font-mono text-xs text-muted-foreground">
-            <span className="size-2.5 rounded-full bg-line" />
-            <span className="size-2.5 rounded-full bg-line" />
-            <span className="size-2.5 rounded-full bg-line" />
-            <span className="ml-2">zarep@voyager: ~</span>
-          </div>
-          <div className="space-y-2 p-5 pb-6 font-mono text-[13px] leading-6">
-            {terminal.map((line) => (
-              <div key={line.cmd}>
-                <div>
-                  <span className="text-accent">$</span> {line.cmd}
-                </div>
-                <div className="text-muted-foreground">{line.out}</div>
-              </div>
-            ))}
-            <div>
-              <span className="text-accent">$</span>{" "}
-              <span className="led inline-block h-4 w-2 bg-accent align-middle" aria-hidden />
-            </div>
-          </div>
-        </aside>
+        <Terminal />
       </Container>
 
       <Ticker />

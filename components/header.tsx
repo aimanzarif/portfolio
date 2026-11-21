@@ -7,7 +7,7 @@ import { navItems, profile } from "@/lib/profile";
 import { Container } from "@/components/site";
 import { useActiveSection } from "@/hooks/use-active-section";
 
-const SECTION_IDS = ["work", "homelab", "experience", "education", "contact"];
+const SECTION_IDS = ["top", "work", "helpdesk", "homelab", "experience", "contact"];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
