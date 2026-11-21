@@ -3,6 +3,7 @@ import { CloudflareEmailOff } from "@/components/cloudflare-email-off";
 import { ExperienceStreams, TicketQueue } from "@/components/sections-client";
 import { SplitText, Stamp } from "@/components/motion-bits";
 import { Reveal } from "@/components/reveal";
+import { RackPulse } from "@/components/rack-pulse";
 import { RackVent } from "@/components/rack-vent";
 import { StatusPanel } from "@/components/status-panel";
 import { Container, Section, SectionHeading } from "@/components/site";
@@ -20,6 +21,7 @@ import {
   skillGroups,
   tickets,
 } from "@/lib/profile";
+import { daysSince } from "@/lib/days";
 import { cn } from "@/lib/utils";
 
 const cardStyles = [
@@ -195,7 +197,7 @@ export function Homelab() {
 
         <Reveal className="min-w-0 max-w-xl flex-[1_1_26rem]">
           <p className="mb-2.5 text-center font-mono text-xs text-muted-foreground">▼ INTERNET</p>
-          <div className="relative rounded-md border-2 border-line bg-card px-[18px] shadow-[inset_0_0_0_6px_var(--background)]">
+          <RackPulse className="relative rounded-md border-2 border-line bg-card px-[18px] shadow-[inset_0_0_0_6px_var(--background)]">
             <div className="relative">
             <div aria-hidden className="pointer-events-none absolute top-10 bottom-10 left-1 w-px bg-line">
               {[0, 1, 2].map((n) => (
@@ -227,7 +229,7 @@ export function Homelab() {
             ))}
             </div>
             <RackVent />
-          </div>
+          </RackPulse>
           <StatusPanel statusHref={homelab.statusHref} />
         </Reveal>
       </div>
@@ -244,9 +246,12 @@ export function Incident() {
             <span className="font-bold">INCIDENT REPORT · {incident.id}</span>
             <Stamp className="text-xs">RESOLVED</Stamp>
           </div>
-          <h2 className="font-display mt-6 text-[clamp(2.5rem,6vw,5rem)] leading-[0.92] font-extrabold tracking-[-0.04em]">
-            <SplitText text={incident.title} />
-          </h2>
+          <div className="mt-6 flex flex-wrap items-end justify-between gap-8">
+            <h2 className="font-display min-w-0 flex-[1_1_22rem] text-[clamp(2.5rem,6vw,5rem)] leading-[0.92] font-extrabold tracking-[-0.04em]">
+              <SplitText text={incident.title} />
+            </h2>
+            <DaysSince date={incident.date} />
+          </div>
           <dl className="mt-10 grid gap-x-10 gap-y-5 sm:grid-cols-2">
             {incident.rows.map((row) => (
               <div key={row.label} className="border-t border-line pt-3">
@@ -259,6 +264,31 @@ export function Incident() {
         </article>
       </Reveal>
     </Section>
+  );
+}
+
+/** Scoreboard: whole days since the incident, in Klang time. Rendered per request, so it ticks over daily. */
+function DaysSince({ date }: { date: string }) {
+  const days = daysSince(date);
+  const digits = String(days).padStart(3, "0").split("");
+  return (
+    <div className="shrink-0" role="group" aria-label={`${days} days since I last deleted something`}>
+      <p className="font-mono text-[11px] font-bold tracking-wide text-muted-foreground uppercase">
+        Days since I terdelete something
+      </p>
+      <div className="mt-2 flex gap-1.5" aria-hidden>
+        {digits.map((digit, i) => (
+          <span
+            key={i}
+            className="relative grid h-16 w-12 place-items-center overflow-hidden rounded-md bg-foreground font-mono text-4xl font-bold text-background"
+          >
+            {digit}
+            <span className="absolute inset-x-0 top-1/2 h-px bg-background/25" />
+          </span>
+        ))}
+      </div>
+      <p className="mt-2 font-mono text-[11px] text-muted-foreground">and counting. touch wood.</p>
+    </div>
   );
 }
 

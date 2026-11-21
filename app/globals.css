@@ -267,7 +267,8 @@ body {
 }
 
 .led {
-  animation: led-blink 2.4s ease-in-out infinite;
+  /* --led-speed is set from the laptop's real CPU load (see RackPulse) */
+  animation: led-blink var(--led-speed, 2.4s) ease-in-out infinite;
 }
 
 .lift-card {
@@ -401,6 +402,7 @@ body {
 
 .voyager-bob { animation: voyager-bob 3s ease-in-out infinite; }
 .voyager-bob-slow { animation: voyager-bob 6s ease-in-out infinite; }
+.voyager-bob-alt { animation: voyager-bob 3.4s ease-in-out 1.1s infinite; }
 .voyager-shake { animation: voyager-shake 0.5s ease-in-out 2; }
 .voyager-key { animation: voyager-key 0.35s steps(2) infinite; }
 .voyager-drop { animation: voyager-drop 1.4s ease-in infinite; transform-box: fill-box; }
@@ -460,7 +462,7 @@ body {
   .marquee-track { animation: none; }
   .terminal-invite, .packet, .vent-bar, .css-rise, .css-wipe, .css-fade-up,
   .bulb-swing, .bulb-flicker .bulb-glass, .bulb-flicker .bulb-rays,
-  .voyager-bob, .voyager-bob-slow, .voyager-shake, .voyager-key, .voyager-drop, .voyager-z, .voyager-pop { animation: none !important; }
+  .voyager-bob, .voyager-bob-slow, .voyager-bob-alt, .voyager-shake, .voyager-key, .voyager-drop, .voyager-z, .voyager-pop { animation: none !important; }
   .packet { display: none; }
   .lift-card { transition: none; }
 

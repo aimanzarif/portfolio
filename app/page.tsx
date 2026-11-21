@@ -3,6 +3,7 @@ import { Hero } from "@/components/hero";
 import { InPageNav } from "@/components/in-page-nav";
 import { EasterEggs } from "@/components/easter-eggs";
 import { Voyager } from "@/components/voyager";
+import { Travel } from "@/components/travel";
 import {
   Contact,
   Education,
@@ -29,6 +30,7 @@ export default function Home() {
           <Incident />
           <Experience />
           <Education />
+          <Travel />
           <Contact />
         </main>
       </div>

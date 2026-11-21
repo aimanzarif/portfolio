@@ -39,9 +39,11 @@ export const tickets = [
 
 export const incident = {
   id: "INC-2026-06",
+  /** The day it happened (Klang time). Drives the "days since" counter. */
+  date: "2026-06-18",
   title: "The night I deleted SmartRoute.",
   rows: [
-    { label: "When", value: "June 2026, night time (of course lah)" },
+    { label: "When", value: "18 June 2026, night time (of course lah)" },
     { label: "What happened", value: "I terdelete SmartRoute from the server. Not on purpose, ok." },
     { label: "Root cause", value: "Me. Who else." },
     { label: "Time to recover", value: "About 3 hours" },

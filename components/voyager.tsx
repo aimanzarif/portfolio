@@ -4,7 +4,10 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { getServerSnapshot, getSnapshot, isNight, klangParts, subscribe } from "@/lib/klang";
 import { summarize, useStatus } from "@/lib/use-status";
 import { onVoyager } from "@/lib/voyager-events";
+import { useVitals } from "@/lib/use-vitals";
+import { isHot } from "@/lib/vitals";
 import { cn } from "@/lib/utils";
+import { ZarifSprite } from "@/components/zarif-sprite";
 
 /*
  * voyager: the laptop that actually hosts this site, as a 22×18 pixel mascot.
@@ -12,7 +15,7 @@ import { cn } from "@/lib/utils";
  * > sleeping (night in Klang) > watching the keyboard (someone is typing) > idle.
  */
 
-type Mood = "idle" | "blink" | "typing" | "happy" | "shock" | "sleep" | "sweat" | "groggy";
+type Mood = "idle" | "blink" | "typing" | "happy" | "shock" | "sleep" | "sweat" | "hot" | "groggy";
 type Px = readonly [x: number, y: number, w?: number, h?: number];
 
 const FACES: Record<Mood, readonly Px[]> = {
@@ -23,6 +26,7 @@ const FACES: Record<Mood, readonly Px[]> = {
   shock: [[7, 5, 2, 3], [13, 5, 2, 3], [10, 9, 2, 2]],
   sleep: [[7, 7, 2, 1], [13, 7, 2, 1], [10, 10, 2, 1]],
   sweat: [[7, 6, 2, 2], [13, 6, 2, 2], [7, 5], [8, 4], [13, 4], [14, 5], [8, 10], [9, 9], [10, 10], [11, 9], [12, 10], [13, 9]],
+  hot: [[7, 6, 2, 2], [13, 6, 2, 2], [7, 5], [8, 4], [13, 4], [14, 5], [9, 10, 4, 1], [10, 9, 2, 1]],
   groggy: [[7, 7, 2, 1], [13, 6, 2, 2], [9, 10, 3, 1]],
 };
 
@@ -32,10 +36,20 @@ const IDLE_LINES = [
   "32 GB RAM. still not enough for chrome.",
   "psst. the terminal up there takes commands.",
   "zarif cleans my fan sometimes. sometimes.",
+  "LIVE",
   "if i'm warm, it's not a bug. it's a feature.",
 ];
 
 const SHOCK_WORDS = ["rm", "sudo"];
+
+const ZARIF_LINES = [
+  "hai! i'm zarif. the human one.",
+  "this baju melayu is for raya. and for portfolios.",
+  "yes, voyager talks. no, i didn't plan that.",
+  "jangan malu, say hai. email is at the bottom.",
+  "capal on. ready to fix your server.",
+  "if the site is slow, voyager is tired. be nice to him.",
+];
 
 function Pixel({ p, className }: { p: Px; className?: string }) {
   const [x, y, w = 1, h = 1] = p;
@@ -45,10 +59,14 @@ function Pixel({ p, className }: { p: Px; className?: string }) {
 export function Voyager() {
   const minute = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const { state, up, total } = summarize(useStatus());
+  const vitals = useVitals();
+  const hot = isHot(vitals);
   const [reaction, setReaction] = useState<"happy" | "shock" | "groggy" | null>(null);
   const [typing, setTyping] = useState(false);
   const [blink, setBlink] = useState(false);
-  const [bubble, setBubble] = useState<string | null>(null);
+  const [bubble, setBubble] = useState<{ who: "voyager" | "zarif"; text: string } | null>(null);
+  const [zarifBlink, setZarifBlink] = useState(false);
+  const zarifLine = useRef(0);
   const lineIndex = useRef(0);
   const timers = useRef<Record<string, number>>({});
 
@@ -58,8 +76,8 @@ export function Voyager() {
   }, []);
 
   const say = useCallback(
-    (text: string, ms = 4200) => {
-      setBubble(text);
+    (text: string, ms = 4200, who: "voyager" | "zarif" = "voyager") => {
+      setBubble({ who, text });
       later("bubble", ms, () => setBubble(null));
     },
     [later],
@@ -96,6 +114,15 @@ export function Voyager() {
     [later, react, say],
   );
 
+  // Zarif blinks on his own rhythm.
+  useEffect(() => {
+    const loop = window.setInterval(() => {
+      setZarifBlink(true);
+      window.setTimeout(() => setZarifBlink(false), 140);
+    }, 5300);
+    return () => window.clearInterval(loop);
+  }, []);
+
   // Blink now and then while awake.
   useEffect(() => {
     const loop = window.setInterval(() => {
@@ -115,7 +142,7 @@ export function Voyager() {
       /* storage blocked: greet anyway */
     }
     if (greeted) return;
-    const timer = window.setTimeout(() => setBubble("hai! i'm voyager. click me if you're bored."), 6500);
+    const timer = window.setTimeout(() => setBubble({ who: "voyager", text: "hai! i'm voyager. click me if you're bored." }), 6500);
     const hide = window.setTimeout(() => setBubble(null), 11500);
     return () => {
       window.clearTimeout(timer);
@@ -130,9 +157,16 @@ export function Voyager() {
 
   const mood: Mood =
     reaction ??
-    (state === "degraded" ? "sweat" : night ? "sleep" : typing ? "typing" : blink ? "blink" : "idle");
+    (state === "degraded" ? "sweat" : hot ? "hot" : night ? "sleep" : typing ? "typing" : blink ? "blink" : "idle");
 
   const onClick = () => {
+    if (hot && vitals?.ok) {
+      react("shock", 1500);
+      say(
+        `aiyo panas! ${vitals.tempC !== null ? `${vitals.tempC}°C` : `CPU ${vitals.cpu}%`} right now. somebody open the window.`,
+      );
+      return;
+    }
     if (state === "degraded") {
       react("shock", 1500);
       say(`aiyo, ${total - up} of ${total} service down. ZARIF!!`);
@@ -144,15 +178,44 @@ export function Voyager() {
       return;
     }
     react("happy", 1400);
-    say(IDLE_LINES[lineIndex.current % IDLE_LINES.length]);
+    const line = IDLE_LINES[lineIndex.current % IDLE_LINES.length];
+    say(
+      line === "LIVE"
+        ? vitals?.ok
+          ? `real talk: CPU ${vitals.cpu ?? "?"}%, RAM ${vitals.ramPct ?? "?"}%${vitals.tempC !== null ? `, ${vitals.tempC}°C` : ""}. i'm fine. probably.`
+          : "can't read my own sensors right now. that's fine. that's fine."
+        : line,
+    );
     lineIndex.current += 1;
   };
 
-  const faceColor = mood === "sweat" ? "fill-[#ff8b80]" : mood === "sleep" ? "fill-[#5f7f6c]" : "fill-[#a9d3b8]";
+  const onZarif = () => {
+    if (state === "degraded" || hot) {
+      say("ok ok i'm checking. don't panic. (i'm panicking.)", 4200, "zarif");
+      return;
+    }
+    if (night) {
+      say("shh, voyager's sleeping. i should be too.", 4200, "zarif");
+      return;
+    }
+    say(ZARIF_LINES[zarifLine.current % ZARIF_LINES.length], 4200, "zarif");
+    zarifLine.current += 1;
+  };
+
+  const faceColor =
+    mood === "sweat"
+      ? "fill-[#ff8b80]"
+      : mood === "hot"
+        ? "fill-[#ffb36b]"
+        : mood === "sleep"
+          ? "fill-[#5f7f6c]"
+          : "fill-[#a9d3b8]";
   const label =
     mood === "sweat"
       ? "voyager is sweating: a service is down"
-      : mood === "sleep"
+      : mood === "hot" && vitals?.ok
+        ? `voyager is overheating: ${vitals.tempC !== null ? `${vitals.tempC}°C` : `CPU ${vitals.cpu}%`}`
+        : mood === "sleep"
         ? "voyager is asleep, it's night in Klang"
         : "voyager, the laptop that hosts this site";
 
@@ -160,15 +223,32 @@ export function Voyager() {
     <div className="pointer-events-none fixed right-3 bottom-3 z-40 flex flex-col items-end gap-1 print:hidden sm:right-5 sm:bottom-5">
       <div aria-live="polite" className="min-h-0">
         {bubble ? (
-          <p className="voyager-pop pointer-events-auto relative mr-2 max-w-[15rem] rounded-xl border-2 border-foreground bg-card px-3.5 py-2.5 font-mono text-xs leading-5 text-foreground shadow-[4px_4px_0_var(--accent)]">
-            {bubble}
+          <p
+            key={bubble.who}
+            className="voyager-pop pointer-events-auto relative mr-2 max-w-[15rem] rounded-xl border-2 border-foreground bg-card px-3.5 py-2.5 font-mono text-xs leading-5 text-foreground shadow-[4px_4px_0_var(--accent)]"
+          >
+            <span className="sr-only">{bubble.who}: </span>
+            {bubble.text}
             <span
               aria-hidden
-              className="absolute -bottom-[7px] right-8 size-3 rotate-45 border-r-2 border-b-2 border-foreground bg-card"
+              className={cn(
+                "absolute -bottom-[7px] size-3 rotate-45 border-r-2 border-b-2 border-foreground bg-card",
+                bubble.who === "voyager" ? "right-8" : "right-[4.6rem] sm:right-[6.9rem]",
+              )}
             />
           </p>
         ) : null}
       </div>
+      <div className="flex items-end gap-1">
+      <button
+        type="button"
+        onClick={onZarif}
+        aria-label="Zarif, in pixel form. Click to say hai."
+        title="zarif"
+        className="voyager-bob-alt pointer-events-auto rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent"
+      >
+        <ZarifSprite blink={zarifBlink} worried={state === "degraded" || hot} className="h-auto w-[34px] overflow-visible sm:w-[52px]" />
+      </button>
       <button
         type="button"
         onClick={onClick}
@@ -208,8 +288,16 @@ export function Voyager() {
           {FACES[mood].map((p, i) => (
             <Pixel key={i} p={p} className={faceColor} />
           ))}
+          {/* heat haze */}
+          {mood === "hot" ? (
+            <g className="fill-[#ffb36b]">
+              <rect x="6" y="0" width="1" height="1" className="voyager-z" />
+              <rect x="11" y="0" width="1" height="1" className="voyager-z" style={{ animationDelay: "0.6s" }} />
+              <rect x="16" y="0" width="1" height="1" className="voyager-z" style={{ animationDelay: "1.2s" }} />
+            </g>
+          ) : null}
           {/* sweat drop */}
-          {mood === "sweat" ? (
+          {mood === "sweat" || mood === "hot" ? (
             <g className="voyager-drop">
               <rect x="19" y="4" width="1" height="1" className="fill-[#9db8f0]" />
               <rect x="19" y="5" width="2" height="2" className="fill-[#9db8f0]" />
@@ -228,6 +316,7 @@ export function Voyager() {
           ) : null}
         </svg>
       </button>
+      </div>
     </div>
   );
 }

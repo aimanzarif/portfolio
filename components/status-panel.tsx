@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { MonitorStatus } from "@/lib/status";
 import { useStatus } from "@/lib/use-status";
+import { useVitals } from "@/lib/use-vitals";
 import { cn } from "@/lib/utils";
 
 const dot: Record<MonitorStatus, string> = {
@@ -69,6 +70,24 @@ export function StatusPanel({ statusHref }: { statusHref: string }) {
           ))}
         </ul>
       )}
+      <VitalsLine />
     </div>
+  );
+}
+
+function VitalsLine() {
+  const vitals = useVitals();
+  if (!vitals?.ok) return null;
+  const parts = [
+    vitals.cpu !== null ? `CPU ${vitals.cpu}%` : null,
+    vitals.tempC !== null ? `${vitals.tempC}°C` : null,
+    vitals.ramPct !== null ? `RAM ${vitals.ramPct}%` : null,
+    vitals.load1 !== null ? `load ${vitals.load1}` : null,
+  ].filter(Boolean);
+  if (!parts.length) return null;
+  return (
+    <p className="mt-3 border-t border-line pt-3 font-mono text-xs text-muted-foreground">
+      <span className="text-foreground">voyager right now:</span> {parts.join(" · ")}
+    </p>
   );
 }

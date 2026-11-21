@@ -6,6 +6,7 @@ import { profile, projects } from "@/lib/profile";
 import type { StatusReport } from "@/lib/status";
 import { findEgg } from "@/lib/eggs";
 import { emitVoyager } from "@/lib/voyager-events";
+import { GUESTBOOK_MAX, GuestbookSign, guestbookList } from "@/components/guestbook";
 
 type Line = { id: number; kind: "cmd" | "out"; body: ReactNode };
 
@@ -48,7 +49,7 @@ async function statusLine(): Promise<ReactNode> {
 
 const HIDDEN = new Set(["sudo", "rm", "kopi", "teh", "coffee", "makan", "lunch", "travel", "exit", "logout", "neofetch", "hello", "hi", "hai"]);
 
-const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "open", "status", "ping", "ssh", "history", "cv", "contact", "clear"];
+const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "open", "status", "ping", "ssh", "guestbook", "history", "cv", "contact", "clear"];
 const ARGS: Record<string, string[]> = {
   open: projects.map((p) => p.id),
   cd: ["projects", "homelab", "secrets"],
@@ -56,6 +57,7 @@ const ARGS: Record<string, string[]> = {
   ls: ["projects", "secrets"],
   ping: ["zarep.my"],
   ssh: ["zarif@zarep.my"],
+  guestbook: ["sign "],
 };
 
 /** Shell-style completion: returns the completed input, or the candidates when it's ambiguous. */
@@ -132,6 +134,7 @@ open <name>   open a project (smartroute, ikango)
 status        live service status
 ping          measure the trip to my laptop
 ssh zarif     talk to me (opens your email)
+guestbook     read the guestbook (sign: guestbook sign <message>)
 history       what you typed so far
 cv            download my cv
 contact       how to reach me
@@ -238,6 +241,7 @@ export function Terminal() {
   const [history, setHistory] = useState<string[]>([]);
   const [cursor, setCursor] = useState<number | null>(null);
   const [touched, setTouched] = useState(false);
+  const [awaitingName, setAwaitingName] = useState<string | null>(null);
   const nextId = useRef(0);
   const booted = useRef(false);
   const scroller = useRef<HTMLDivElement>(null);
@@ -298,6 +302,43 @@ export function Terminal() {
       setLines(boot.map((line) => ({ id: nextId.current++, kind: line.kind, body: bootBody(line) })));
     }
     const raw = value;
+
+    // Guestbook: second step, the name prompt
+    if (awaitingName !== null) {
+      setValue("");
+      const name = raw.trim().slice(0, 24);
+      push("cmd", name || "(anon)");
+      push("out", <GuestbookSign message={awaitingName} name={name} />);
+      setAwaitingName(null);
+      return;
+    }
+
+    // Guestbook: list or start signing
+    const gb = raw.trim().match(/^guestbook(?:\s+(\S+))?(?:\s+([\s\S]*))?$/i);
+    if (gb) {
+      setValue("");
+      setCursor(null);
+      setHistory((prev) => [...prev, raw.trim()]);
+      push("cmd", raw);
+      emitVoyager({ type: "command", command: "guestbook" });
+      const sub = (gb[1] ?? "").toLowerCase();
+      if (sub === "sign") {
+        const message = (gb[2] ?? "").trim().replace(/^["']|["']$/g, "");
+        if (!message) {
+          push("out", "usage: guestbook sign <message>. example: guestbook sign hai from penang!");
+        } else if (message.length > GUESTBOOK_MAX) {
+          push("out", `too long lah. max ${GUESTBOOK_MAX} characters (yours: ${message.length}).`);
+        } else {
+          setAwaitingName(message);
+          push("out", "your name? (press enter to stay anonymous)");
+        }
+        return;
+      }
+      const id = push("out", "opening the guestbook...");
+      const body = await guestbookList();
+      setLines((prev) => prev.map((line) => (line.id === id ? { ...line, body } : line)));
+      return;
+    }
     setValue("");
     setCursor(null);
     if (raw.trim()) setHistory((prev) => [...prev, raw.trim()]);
@@ -397,7 +438,9 @@ export function Terminal() {
             <div aria-hidden className="pointer-events-none whitespace-pre text-foreground">
               {value}
               <span className="caret-blink inline-block h-[1.15em] w-[0.6em] translate-y-[0.2em] bg-accent" />
-              {!value ? <span className="ml-2 text-muted-foreground/60">type help</span> : null}
+              {!value ? (
+                <span className="ml-2 text-muted-foreground/60">{awaitingName !== null ? "your name (optional)" : "type help"}</span>
+              ) : null}
             </div>
             <input
               ref={input}
