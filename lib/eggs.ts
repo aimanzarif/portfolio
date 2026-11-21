@@ -51,6 +51,13 @@ export function findEgg(egg: Egg) {
   toastListeners.forEach((fn) => fn(message, found.length));
 }
 
+/** Show an egg's toast again without counting it (for eggs that should react every time). */
+export function replayEgg(egg: Egg) {
+  ensureLoaded();
+  if (!found.includes(egg)) return findEgg(egg);
+  toastListeners.forEach((fn) => fn(eggMessages[egg], found.length));
+}
+
 export function onEggFound(fn: (message: string, count: number) => void) {
   toastListeners.add(fn);
   return () => {

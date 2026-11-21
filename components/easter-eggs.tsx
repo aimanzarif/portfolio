@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { EGGS, eggHints, findEgg, onEggFound, useEggs } from "@/lib/eggs";
+import { EGGS, eggHints, onEggFound, replayEgg, useEggs } from "@/lib/eggs";
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
@@ -32,7 +32,7 @@ export function EasterEggs() {
       progress = key === KONAMI[progress] ? progress + 1 : key === KONAMI[0] ? 1 : 0;
       if (progress === KONAMI.length) {
         progress = 0;
-        findEgg("konami");
+        replayEgg("konami"); // counts once, but the toast shows every time
       }
     };
     window.addEventListener("keydown", onKey);
