@@ -373,6 +373,13 @@ body {
 
 .rocket-flame { animation: rocket-flame 0.12s linear infinite; }
 
+@keyframes zip-pull {
+  0%, 100% { transform: rotate(-14deg); }
+  50% { transform: rotate(14deg); }
+}
+
+.zip-pull { animation: zip-pull 0.5s ease-in-out infinite; }
+
 /* voyager, the mascot */
 @keyframes voyager-bob {
   0%, 100% { transform: translateY(0); }
