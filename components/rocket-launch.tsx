@@ -37,8 +37,11 @@ const PX = 8; // screen pixels per art pixel (same chunkiness as voyager)
 // Timeline (ms)
 const RISE = 260; // smoke covers the page
 const FLIGHT = 1100; // rocket climbs off the top
-const PART = 450; // halves slide away
-const TOTAL = RISE + FLIGHT + PART;
+const PEEL_START = RISE + FLIGHT * 0.8; // peeling starts while the rocket is still climbing
+const PEEL = 800; // both halves peel upwards off the page
+const TOTAL = PEEL_START + PEEL;
+const PEEL_SPREAD = 22; // rows the zip edge leads the outer edges by (peels from the zip outwards)
+const CURL = 3; // rows of curled-up smoke underside along the peel line
 
 // voyager's palette
 const C = {
@@ -147,7 +150,7 @@ function makeSmoke(w: number, h: number) {
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const easeOut = (p: number) => 1 - Math.pow(1 - p, 3);
-const easeIn = (p: number) => p * p * p;
+const easeInOut = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
 function Launch({ onDone }: { onDone: () => void }) {
   const stage = useRef<HTMLCanvasElement>(null);
@@ -237,16 +240,27 @@ function Launch({ onDone }: { onDone: () => void }) {
         }
       } else {
         const flight = clamp((t - RISE) / FLIGHT);
-        const slope = 0.25 + flight * 1.6; // how fast the V widens below the slider
-        const part = Math.round(easeIn(clamp((t - RISE - FLIGHT) / PART)) * (cx + 2));
+        const slope = 0.12 + flight * 0.28; // how fast the V widens below the slider (leaves two halves to peel)
+        const halfOpen = (r: number) => (r < slider ? 0 : Math.round((r - slider) * slope));
+
+        // Peel: a line sweeps up from the bottom; it leads at the zip and trails at the outer edges.
+        const pp = easeInOut(clamp((t - PEEL_START) / PEEL));
+        const peelBase = gh + 2 - pp * (gh + 2 + PEEL_SPREAD + CURL + 2);
+        const peelY = (c: number) => peelBase + (Math.abs(c - cx) / cx) * PEEL_SPREAD;
 
         for (let r = 0; r < gh; r++) {
-          const o = r < slider ? 0 : Math.round((r - slider) * slope);
-          const leftEnd = cx - o - part; // exclusive
-          const rightStart = cx + o + part;
-          if (leftEnd > 0) ctx.drawImage(smoke, part, r, leftEnd, 1, 0, r, leftEnd, 1);
-          if (rightStart < gw) ctx.drawImage(smoke, cx + o, r, gw - rightStart, 1, rightStart, r, gw - rightStart, 1);
+          const o = halfOpen(r);
+          const leftEnd = cx - o; // exclusive
+          const rightStart = cx + o;
+          // fraction of the half (from the zip outwards) already peeled away on this row
+          const need = (r - peelBase) / PEEL_SPREAD;
+          const leftCover = need <= 0 ? leftEnd : Math.min(leftEnd, Math.floor(cx - need * cx));
+          const rightCover = need <= 0 ? rightStart : Math.max(rightStart, Math.ceil(cx + need * cx));
+          if (leftCover > 0) ctx.drawImage(smoke, 0, r, leftCover, 1, 0, r, leftCover, 1);
+          if (rightCover < gw) ctx.drawImage(smoke, rightCover, r, gw - rightCover, 1, rightCover, r, gw - rightCover, 1);
 
+          const zipIntact = leftCover === leftEnd && rightCover === rightStart;
+          if (!zipIntact) continue;
           if (r < slider) {
             // interlocked teeth above the slider
             ctx.fillStyle = r % 2 ? C.metal : C.metalDark;
@@ -261,6 +275,21 @@ function Launch({ onDone }: { onDone: () => void }) {
             ctx.fillStyle = C.metal;
             if (r % 2 === 0) ctx.fillRect(leftEnd - 2, r, 1, 1);
             else ctx.fillRect(rightStart + 1, r, 1, 1);
+          }
+        }
+
+        // The curl: the smoke's underside rolling up just below the peel line
+        if (pp > 0) {
+          for (let c = 0; c < gw; c++) {
+            const py = Math.floor(peelY(c));
+            for (let k = 0; k < CURL; k++) {
+              const rr = py + k;
+              if (rr < 0 || rr >= gh) continue;
+              const o = halfOpen(rr);
+              if (c >= cx - o && c < cx + o) continue; // inside the opened zip: no smoke there
+              ctx.fillStyle = k === 0 ? C.edge : k === CURL - 1 ? C.shade : C.light;
+              ctx.fillRect(c, rr, 1, 1);
+            }
           }
         }
       }
