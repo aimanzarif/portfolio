@@ -171,8 +171,12 @@ export const projects: readonly {
   },
 ];
 
-export const alsoBuilt =
-  "Also built: an internal management system at AMTIS (Laravel, Vue.js, Shadcn UI, MySQL) with Excel import and export that non-technical staff could use on their own.";
+export const alsoBuilt = {
+  name: "Internal Management System",
+  where: "AMTIS · Sep 2025 — Feb 2026",
+  story: "An internal ops platform with Excel import and export that non-technical staff could use on their own. Private, so no demo, sorry.",
+  stack: ["Laravel", "Vue.js", "Shadcn UI", "MySQL"],
+} as const;
 
 export const skillGroups = [
   {

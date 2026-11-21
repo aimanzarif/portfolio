@@ -54,8 +54,11 @@ export function Work() {
             <h2 className="font-display text-[clamp(2.75rem,6.5vw,5.75rem)] leading-[0.9] font-extrabold tracking-[-0.04em]">
               <SplitText text={"Things I built\n(or keep alive)."} />
             </h2>
-            <p className="max-w-xs opacity-80">
-              Two are live on my laptop right now. Go on, click them. I&apos;ll know if it goes down.
+            <p className="max-w-sm text-xl leading-8 font-medium">
+              <span className="mb-2 flex items-center gap-2 font-mono text-sm font-bold tracking-wide uppercase">
+                <span className="led size-2.5 rounded-full bg-accent" aria-hidden />2 live right now
+              </span>
+              Go on, click them. They run on my laptop, and I&apos;ll know if they go down.
             </p>
           </div>
         </Reveal>
@@ -132,7 +135,16 @@ export function Work() {
           })}
         </div>
         <Reveal>
-          <p className="mt-10 max-w-3xl opacity-80">{alsoBuilt}</p>
+          <article className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4 rounded-[1.25rem] border-2 border-dashed border-band-foreground/50 p-6 sm:p-8">
+            <div className="min-w-0 flex-[1_1_18rem]">
+              <p className="font-mono text-xs font-bold tracking-wide uppercase opacity-80">Also built · {alsoBuilt.where}</p>
+              <h3 className="font-display mt-2 text-3xl font-extrabold tracking-[-0.03em]">{alsoBuilt.name}</h3>
+            </div>
+            <div className="min-w-0 flex-[2_1_24rem]">
+              <p className="text-lg leading-7 opacity-85">{alsoBuilt.story}</p>
+              <p className="mt-3 font-mono text-xs tracking-wide uppercase opacity-80">{alsoBuilt.stack.join(" · ")}</p>
+            </div>
+          </article>
         </Reveal>
       </Container>
     </section>
@@ -183,7 +195,8 @@ export function Homelab() {
         <Reveal className="min-w-0 max-w-xl flex-[1_1_26rem]">
           <p className="mb-2.5 text-center font-mono text-xs text-muted-foreground">▼ INTERNET</p>
           <div className="relative rounded-md border-2 border-line bg-card px-[18px] shadow-[inset_0_0_0_6px_var(--background)]">
-            <div aria-hidden className="pointer-events-none absolute top-0 bottom-0 left-[22px] w-px bg-line">
+            <div className="relative">
+            <div aria-hidden className="pointer-events-none absolute top-10 bottom-10 left-1 w-px bg-line">
               {[0, 1, 2].map((n) => (
                 <span
                   key={n}
@@ -211,6 +224,7 @@ export function Homelab() {
                 <div className="text-right font-mono text-[11px] text-muted-foreground">{unit.spec}</div>
               </div>
             ))}
+            </div>
             <div aria-hidden className="vent my-3.5 h-11 opacity-70" />
           </div>
           <StatusPanel statusHref={homelab.statusHref} />
@@ -264,7 +278,10 @@ export function Experience() {
             </h3>
             <p className="mt-1 text-muted-foreground">{currentRole.location}</p>
             <p className="mt-3 max-w-2xl text-muted-foreground">
-              Help desk, hosting and server support. See the queue above.
+              Help desk, hosting and server support.{" "}
+              <a href="#helpdesk" className="font-medium text-foreground underline decoration-accent decoration-2 underline-offset-4">
+                See what a normal day looks like ↑
+              </a>
             </p>
           </div>
         </div>
