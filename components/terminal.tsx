@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type R
 import { useReducedMotion } from "motion/react";
 import { profile, projects } from "@/lib/profile";
 import type { StatusReport } from "@/lib/status";
+import { findEgg } from "@/lib/eggs";
 
 type Line = { id: number; kind: "cmd" | "out"; body: ReactNode };
 
@@ -44,7 +45,13 @@ async function statusLine(): Promise<ReactNode> {
   }
 }
 
+const HIDDEN = new Set(["sudo", "rm", "kopi", "teh", "coffee", "makan", "lunch", "travel", "exit", "logout", "neofetch", "hello", "hi", "hai"]);
+
 function run(raw: string): ReactNode | Promise<ReactNode> | "clear" {
+  const first = raw.trim().toLowerCase().split(/\s+/)[0];
+  const secret = raw.toLowerCase().includes("secret");
+  if (HIDDEN.has(first) || secret) findEgg("terminal");
+
   const input = raw.trim();
   const cmd = input.toLowerCase();
   const [head, ...rest] = cmd.split(/\s+/);
@@ -181,19 +188,19 @@ export function Terminal() {
       await wait(reduced ? 0 : 900);
       const result: Line[] = [];
       for (const line of boot) {
-        if (!alive) return;
+        if (!alive || booted.current) return;
         const id = nextId.current++;
         if (line.kind === "cmd" && step) {
           for (let i = 1; i <= line.text.length; i++) {
             await wait(45 + Math.random() * 50);
-            if (!alive) return;
+            if (!alive || booted.current) return;
             setLines([...result, { id, kind: "cmd", body: line.text.slice(0, i) }]);
           }
           await wait(250);
         } else if (step) {
           await wait(line.hint ? 500 : 120);
         }
-        if (!alive) return;
+        if (!alive || booted.current) return;
         result.push({ id, kind: line.kind, body: bootBody(line) });
         setLines([...result]);
       }

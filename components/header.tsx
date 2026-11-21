@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { findEgg } from "@/lib/eggs";
 import { motion } from "motion/react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { navItems, profile } from "@/lib/profile";
@@ -14,6 +15,16 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const active = useActiveSection(SECTION_IDS);
+  const presses = useRef<number[]>([]);
+
+  const pressPower = () => {
+    const now = Date.now();
+    presses.current = [...presses.current.filter((t) => now - t < 2000), now];
+    if (presses.current.length >= 5) {
+      presses.current = [];
+      findEgg("power");
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -50,10 +61,19 @@ export function Header() {
     >
       <Container>
         <div className="flex items-center justify-between py-4">
-          <a href="#top" className="flex items-center gap-3 font-mono text-[17px] font-bold">
-            <span className="led size-2.5 rounded-full bg-accent" aria-hidden />
-            zarep.my
-          </a>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={pressPower}
+              aria-label="Power LED"
+              className="-ml-3 inline-flex size-11 items-center justify-center rounded-full"
+            >
+              <span className="led size-2.5 rounded-full bg-accent" aria-hidden />
+            </button>
+            <a href="#top" className="font-mono text-[17px] font-bold">
+              zarep.my
+            </a>
+          </div>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
             {navItems.map((item) => {
               const isActive = active === item.href.slice(1);

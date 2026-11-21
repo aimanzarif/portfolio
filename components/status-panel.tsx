@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { MonitorStatus, StatusReport } from "@/lib/status";
+import type { MonitorStatus } from "@/lib/status";
+import { useStatus } from "@/lib/use-status";
 import { cn } from "@/lib/utils";
 
 const dot: Record<MonitorStatus, string> = {
@@ -25,24 +26,12 @@ function ago(iso: string) {
 }
 
 export function StatusPanel({ statusHref }: { statusHref: string }) {
-  const [report, setReport] = useState<StatusReport | null>(null);
+  const report = useStatus();
   const [, tick] = useState(0);
 
   useEffect(() => {
-    let alive = true;
-    const load = () =>
-      fetch("/api/status")
-        .then((res) => res.json() as Promise<StatusReport>)
-        .then((data) => alive && setReport(data))
-        .catch(() => alive && setReport({ ok: false, checkedAt: new Date().toISOString() }));
-    load();
-    const poll = window.setInterval(load, 60_000);
     const clock = window.setInterval(() => tick((n) => n + 1), 10_000);
-    return () => {
-      alive = false;
-      window.clearInterval(poll);
-      window.clearInterval(clock);
-    };
+    return () => window.clearInterval(clock);
   }, []);
 
   return (

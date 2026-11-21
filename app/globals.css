@@ -317,20 +317,28 @@ body {
   animation: packet 3.2s linear infinite;
 }
 
-.vent {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--line) 0,
-    var(--line) 2px,
-    transparent 2px,
-    transparent 10px
-  );
+/* Rack vent as a status light */
+@keyframes vent-wave {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+.vent-ok .vent-bar {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: vent-wave 2.4s ease-in-out infinite;
+}
+
+.vent-bad .vent-bar {
+  background: var(--destructive);
+  box-shadow: 0 0 6px var(--destructive);
+  animation: vent-wave 0.9s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .led { animation: none; }
   .marquee-track { animation: none; }
-  .terminal-invite, .packet { animation: none; }
+  .terminal-invite, .packet, .vent-bar { animation: none !important; }
   .packet { display: none; }
   .lift-card { transition: none; }
 

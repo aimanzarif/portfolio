@@ -3,6 +3,7 @@ import { CloudflareEmailOff } from "@/components/cloudflare-email-off";
 import { ExperienceStreams, TicketQueue } from "@/components/sections-client";
 import { SplitText, Stamp } from "@/components/motion-bits";
 import { Reveal } from "@/components/reveal";
+import { RackVent } from "@/components/rack-vent";
 import { StatusPanel } from "@/components/status-panel";
 import { Container, Section, SectionHeading } from "@/components/site";
 import {
@@ -225,7 +226,7 @@ export function Homelab() {
               </div>
             ))}
             </div>
-            <div aria-hidden className="vent my-3.5 h-11 opacity-70" />
+            <RackVent />
           </div>
           <StatusPanel statusHref={homelab.statusHref} />
         </Reveal>
