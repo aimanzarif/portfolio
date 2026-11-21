@@ -10,7 +10,7 @@ import { navItems, profile } from "@/lib/profile";
 import { Container } from "@/components/site";
 import { useActiveSection } from "@/hooks/use-active-section";
 
-const SECTION_IDS = ["top", "work", "helpdesk", "homelab", "experience", "contact"];
+const SECTION_IDS = ["top", "work", "helpdesk", "homelab", "experience", "travel", "contact"];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,7 +18,7 @@ export function Header() {
   const [progress, setProgress] = useState(0);
   const active = useActiveSection(SECTION_IDS);
   const presses = useRef<number[]>([]);
-  const currentPath = navItems.find((item) => item.href === `#${active}`)?.path ?? (active === "contact" ? "contact" : "");
+  const currentPath = navItems.find((item) => item.href === `#${active}`)?.path ?? (active === "contact" || active === "travel" ? active : "");
 
   const pressPower = () => {
     const now = Date.now();

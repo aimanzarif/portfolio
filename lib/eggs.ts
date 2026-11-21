@@ -13,7 +13,7 @@ export const eggHints: Record<Egg, string> = {
 
 const eggMessages: Record<Egg, string> = {
   terminal: "Eh, you found one. The terminal got secrets.",
-  konami: "CHEAT CODE: GAJI MASUK. Travel list approved, scroll down and see. (this universe only lah)",
+  konami: "CHEAT CODE: GAJI MASUK. Travel list approved, jom tengok. (this universe only lah)",
   power: "Oi, that one power button. Please don't lah.",
 };
 
