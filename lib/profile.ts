@@ -245,3 +245,41 @@ export const navItems = [
   { href: "#homelab", label: "Homelab", path: "homelab" },
   { href: "#experience", label: "Experience", path: "experience" },
 ] as const;
+
+/** Plain-English versions for the recruiter view (/resume). */
+export const resume = {
+  summary:
+    "IT Support at ServerFreak Technologies in Klang, resolving hosting, email, WordPress, Microsoft 365 and server issues through tickets, live chat and phone. Previously a junior software developer at AMTIS Solutions, building Laravel and Vue.js modules and carrying out manual QA. Runs a self-hosted RHEL server that hosts several live projects.",
+  serverfreak: [
+    "Resolve customer issues through tickets, live chat and phone, including time-critical calls.",
+    "Malware cleanup on compromised websites.",
+    "Email delivery, connectivity and mail client troubleshooting.",
+    "Server optimisation and SQL tuning; WordPress debugging.",
+    "Microsoft 365 suite troubleshooting and account and password support.",
+  ],
+  projects: [
+    {
+      name: "SmartRoute",
+      meta: "Final-year project · Sep 2025 — Feb 2026",
+      body: "Rule and role-based API gateway that centralises API routing, authentication and access control. Laravel 12, Laravel Passport, Google OAuth. Self-hosted with Docker.",
+      href: "https://smartroute.zarep.my",
+    },
+    {
+      name: "ikanGO",
+      meta: "Server administrator · Ongoing",
+      body: "Hosting and operating a friend's fish-collection web app: Next.js client, ONNX image-recognition API and FastAPI with PostgreSQL, each containerised.",
+      href: "https://ikango.zarep.my",
+    },
+    {
+      name: "Jerai Hill Resort mobile app",
+      meta: "QA · AMTIS · Mar 2026 — May 2026",
+      body: "Functional, regression and edge-case testing on iOS and Android, with structured test cases and reproducible defect reports. No critical defects reached production in the releases tested.",
+    },
+    {
+      name: "Self-hosted homelab",
+      meta: "Personal · Ongoing",
+      body: "RHEL 10 server running Docker Compose behind Cloudflare Tunnel and Nginx Proxy Manager; SELinux, firewalld, Fail2ban and Tailscale; monitored with Uptime Kuma and Netdata. Wrote malwatch, a YARA-based malware scanner in Go.",
+      href: "https://zarep.my/#homelab",
+    },
+  ],
+} as const;

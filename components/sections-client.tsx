@@ -88,7 +88,7 @@ className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3"
               <span className="w-12 shrink-0 font-mono text-xs text-muted-foreground">
                 #{String(index + 1).padStart(3, "0")}
               </span>
-              <div className={`min-w-0 flex-1 basis-48 transition-opacity duration-500 ${done ? "opacity-60" : ""}`}>
+              <div className="min-w-0 flex-1 basis-48">
                 <p className="font-medium">&ldquo;{ticket.title}&rdquo;</p>
                 <p className="text-sm text-muted-foreground">{ticket.fix}</p>
               </div>

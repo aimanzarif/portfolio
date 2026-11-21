@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { findEgg } from "@/lib/eggs";
 import { motion } from "motion/react";
 import { KlangClock } from "@/components/klang-clock";
+import { ModeToggle } from "@/components/mode-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { navItems, profile } from "@/lib/profile";
 import { Container } from "@/components/site";
@@ -61,6 +62,9 @@ export function Header() {
         scrolled || open ? "border-b border-line bg-background/90 backdrop-blur-xl" : "bg-transparent"
       }`}
     >
+      <a href="#work" className="skip-link">
+        Skip to content
+      </a>
       <Container>
         <div className="grid grid-cols-[1fr_auto] items-center gap-4 py-4 lg:grid-cols-[1fr_auto_1fr]">
           <div className="flex items-center gap-1">
@@ -115,6 +119,7 @@ export function Header() {
           </nav>
           <div className="flex items-center justify-end gap-2">
             <KlangClock className="hidden xl:flex" />
+            <ModeToggle mode="fun" className="hidden 2xl:flex" />
             <ThemeToggle />
             <a
               href="#contact"
@@ -171,6 +176,7 @@ export function Header() {
             >
               Say hai →
             </a>
+            <ModeToggle mode="fun" className="mt-3 flex self-start" />
             <KlangClock className="mt-3 mb-3 flex self-start" />
           </nav>
         ) : null}

@@ -47,7 +47,53 @@ async function statusLine(): Promise<ReactNode> {
 
 const HIDDEN = new Set(["sudo", "rm", "kopi", "teh", "coffee", "makan", "lunch", "travel", "exit", "logout", "neofetch", "hello", "hi", "hai"]);
 
-function run(raw: string): ReactNode | Promise<ReactNode> | "clear" {
+const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "open", "status", "ping", "ssh", "history", "cv", "contact", "clear"];
+const ARGS: Record<string, string[]> = {
+  open: projects.map((p) => p.id),
+  cd: ["projects", "homelab", "secrets"],
+  cat: ["cv.pdf", "secrets"],
+  ls: ["projects", "secrets"],
+  ping: ["zarep.my"],
+  ssh: ["zarif@zarep.my"],
+};
+
+/** Shell-style completion: returns the completed input, or the candidates when it's ambiguous. */
+function complete(input: string): { value: string } | { options: string[] } | null {
+  const parts = input.split(" ");
+  if (parts.length === 1) {
+    const hits = COMMANDS.filter((c) => c.startsWith(parts[0].toLowerCase()));
+    if (hits.length === 1) return { value: `${hits[0]} ` };
+    return hits.length ? { options: hits } : null;
+  }
+  const [cmd, ...rest] = parts;
+  const partial = rest.join(" ").toLowerCase();
+  const hits = (ARGS[cmd.toLowerCase()] ?? []).filter((a) => a.startsWith(partial));
+  if (hits.length === 1) return { value: `${cmd} ${hits[0]}` };
+  return hits.length ? { options: hits } : null;
+}
+
+async function ping(): Promise<ReactNode> {
+  const times: number[] = [];
+  for (let i = 0; i < 4; i++) {
+    const start = performance.now();
+    try {
+      await fetch(`/api/ping?seq=${i}`, { cache: "no-store" });
+      times.push(Math.round(performance.now() - start));
+    } catch {
+      return "ping: zarep.my: cannot reach lah. the laptop tidur kot.";
+    }
+  }
+  const avg = Math.round(times.reduce((a, b) => a + b, 0) / times.length);
+  return (
+    <span className="whitespace-pre-wrap">
+      {`PING zarep.my (a laptop in Klang)
+${times.map((t, i) => `reply from zarep.my: seq=${i + 1} time=${t} ms`).join("\n")}
+--- 4 sent, 4 received, avg ${avg} ms. ${avg < 150 ? "laju jugak." : "slow sikit, maybe your wifi."}`}
+    </span>
+  );
+}
+
+function run(raw: string, history: readonly string[] = []): ReactNode | Promise<ReactNode> | "clear" {
   const first = raw.trim().toLowerCase().split(/\s+/)[0];
   const secret = raw.toLowerCase().includes("secret");
   if (HIDDEN.has(first) || secret) findEgg("terminal");
@@ -83,9 +129,13 @@ function run(raw: string): ReactNode | Promise<ReactNode> | "clear" {
 ls            look around
 open <name>   open a project (smartroute, ikango)
 status        live service status
+ping          measure the trip to my laptop
+ssh zarif     talk to me (opens your email)
+history       what you typed so far
 cv            download my cv
 contact       how to reach me
 clear         clean slate
+tab           autocomplete, like a real shell
 ...and a few more, but i won't tell lah.`}
         </span>
       );
@@ -158,6 +208,21 @@ Host:    Acer laptop pretending to be a rack
 RAM:     32 GB
 Uptime:  type \`status\`
 Shell:   bash, and patience`}
+        </span>
+      );
+    case "ping":
+      return ping();
+    case "ssh":
+      if (!arg) return "ssh: who you want to connect to? try `ssh zarif`.";
+      window.setTimeout(() => {
+        window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent("Hai Zarif (from your terminal)")}`;
+      }, 900);
+      return `connecting to ${profile.email}... opening your email app. say hai!`;
+    case "history":
+      if (!history.length) return "no history yet. you're clean.";
+      return (
+        <span className="whitespace-pre-wrap">
+          {history.map((h, i) => `${String(i + 1).padStart(4, " ")}  ${h}`).join("\n")}
         </span>
       );
     default:
@@ -234,9 +299,9 @@ export function Terminal() {
     const raw = value;
     setValue("");
     setCursor(null);
-    if (raw.trim()) setHistory((prev) => [...prev, raw]);
+    if (raw.trim()) setHistory((prev) => [...prev, raw.trim()]);
 
-    const result = run(raw);
+    const result = run(raw, raw.trim() ? [...history, raw.trim()] : history);
     if (result === "clear") {
       setLines([]);
       return;
@@ -253,6 +318,19 @@ export function Terminal() {
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    // Tab completes; on an empty prompt it stays a normal Tab so keyboard users can move on.
+    if (event.key === "Tab" && value.trim()) {
+      event.preventDefault();
+      const result = complete(value);
+      if (!result) return;
+      if ("value" in result) {
+        setValue(result.value);
+      } else {
+        push("cmd", value);
+        push("out", result.options.join("   "));
+      }
+      return;
+    }
     if (!history.length) return;
     if (event.key === "ArrowUp") {
       event.preventDefault();

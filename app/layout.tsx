@@ -60,6 +60,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const cookieStore = await cookies();
   const theme = parseThemePreference(cookieStore.get(THEME_STORAGE_KEY)?.value);
   const nonce = (await headers()).get("x-nonce") ?? undefined;
+  // Cloudflare Web Analytics: cookie-free. Set CF_BEACON_TOKEN at runtime to turn it on.
+  const beaconToken = process.env.CF_BEACON_TOKEN;
 
   return (
     <html
@@ -80,6 +82,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             __html: `(function(){var tt=window.trustedTypes;if(!tt||!tt.createPolicy)return;try{tt.createPolicy("default",{createHTML:function(s){return s},createScript:function(s){return s},createScriptURL:function(s){return s}})}catch(e){}})();`,
           }}
         />
+        {beaconToken ? (
+          <script
+            defer
+            nonce={nonce}
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: beaconToken })}
+          />
+        ) : null}
       </head>
       <body className="flex min-h-dvh flex-col overflow-x-clip font-sans">
         {children}

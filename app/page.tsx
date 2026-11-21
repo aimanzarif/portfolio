@@ -18,9 +18,6 @@ export default function Home() {
       <InPageNav />
       <EasterEggs />
       <div className="relative z-10">
-        <a href="#work" className="skip-link">
-          Skip to content
-        </a>
         <Header />
         <main>
           <Hero />
