@@ -2,28 +2,44 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * The active section is the last one whose top has passed a line 40% down the viewport.
+ * Works for sections of any height (an IntersectionObserver ratio never triggers on very tall ones).
+ */
 export function useActiveSection(ids: readonly string[]) {
   const [active, setActive] = useState("");
   const idKey = ids.join(",");
 
   useEffect(() => {
     const list = idKey.split(",");
-    const nodes = list
-      .map((id) => document.getElementById(id))
-      .filter((node): node is HTMLElement => Boolean(node));
+    let frame = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target.id) setActive(visible.target.id);
-      },
-      { rootMargin: "-35% 0px -50% 0px", threshold: [0.1, 0.25, 0.5] },
-    );
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.4;
+      let current = "";
+      for (const id of list) {
+        const node = document.getElementById(id);
+        if (node && node.getBoundingClientRect().top <= line) current = id;
+      }
+      // At the very bottom, the last section wins even if it is too short to reach the line.
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (atBottom) current = list[list.length - 1];
+      setActive((prev) => (prev === current ? prev : current));
+    };
 
-    nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    frame = window.requestAnimationFrame(update);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [idKey]);
 
   return active;
