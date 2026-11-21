@@ -1,4 +1,4 @@
-import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
@@ -20,7 +20,9 @@ export type GuestbookEntry = {
 export type PublicEntry = Pick<GuestbookEntry, "id" | "name" | "message" | "createdAt">;
 
 const FILE = process.env.GUESTBOOK_FILE ?? (process.env.NODE_ENV === "production" ? "/app/data/guestbook.json" : ".data/guestbook.json");
-const SALT = process.env.GUESTBOOK_SALT ?? process.env.GUESTBOOK_ADMIN_TOKEN ?? "zarep-guestbook";
+// Salt for the IP hashes. Its own secret; falls back to the admin token, and never to a public string
+// (without either, a random per-process salt: rate limits then reset on restart, which is harmless).
+const SALT = process.env.GUESTBOOK_SALT || process.env.GUESTBOOK_ADMIN_TOKEN || randomBytes(16).toString("hex");
 
 export const LIMITS = { message: 140, name: 24, perIpPerHour: 3, maxPending: 50 } as const;
 

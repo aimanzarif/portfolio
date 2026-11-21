@@ -22,6 +22,7 @@ services:
       TURNSTILE_SECRET: ${TURNSTILE_SECRET:-}
       TURNSTILE_HOSTNAMES: ${TURNSTILE_HOSTNAMES:-zarep.my,www.zarep.my,staging.zarep.my}
       GUESTBOOK_ADMIN_TOKEN: ${GUESTBOOK_ADMIN_TOKEN:-}
+      GUESTBOOK_SALT: ${GUESTBOOK_SALT:-}
       NEXT_PUBLIC_SITE_URL: https://staging.zarep.my
     extra_hosts:
       # Lets the container reach services on the laptop itself (Netdata)
