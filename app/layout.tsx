@@ -7,6 +7,7 @@ import { isProduction, siteUrl } from "@/lib/site";
 import { parseThemePreference, THEME_STORAGE_KEY, themeClassName } from "@/lib/theme";
 import "./globals.css";
 import { TRUSTED_TYPES_BOOTSTRAP, TRUSTED_TYPES_BOOTSTRAP_DEV } from "@/lib/trusted-types";
+import { HIDE_STACK_GLOBALS } from "@/lib/stealth";
 
 const title = `${profile.shortName} — ${profile.title}`;
 const description =
@@ -80,7 +81,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <script
           nonce={nonce}
           dangerouslySetInnerHTML={{
-            __html: process.env.NODE_ENV === "development" ? TRUSTED_TYPES_BOOTSTRAP_DEV : TRUSTED_TYPES_BOOTSTRAP,
+            __html:
+              HIDE_STACK_GLOBALS +
+              (process.env.NODE_ENV === "development" ? TRUSTED_TYPES_BOOTSTRAP_DEV : TRUSTED_TYPES_BOOTSTRAP),
           }}
         />
         {beaconToken ? (
