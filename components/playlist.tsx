@@ -13,6 +13,9 @@ import { useMusic } from "@/lib/use-music";
 
 const PLAYLIST_ID = /^[A-Za-z0-9]{10,40}$/;
 
+/** Songs shown before "show all". */
+const SHOWN = 10;
+
 export function Playlist() {
   const music = useMusic();
   const [player, setPlayer] = useState(false);
@@ -34,18 +37,20 @@ export function Playlist() {
       <Reveal tilt>
         <article className="overflow-hidden rounded-xl border-2 border-line bg-card">
           <div className="grid gap-6 p-5 md:grid-cols-[1fr_minmax(0,22rem)]">
-            {/* track list from the API */}
-            <div className="min-w-0">
+            {/* track list from the API: fills the same height as the player beside it */}
+            <div className="flex min-w-0 flex-col md:h-[352px]">
               <p className="font-mono text-[11px] tracking-wide text-muted-foreground uppercase">
                 {list.name} · {list.total} songs
               </p>
               {list.songs.length ? (
                 <ol
                   id="playlist-songs"
-                  className={`mt-3 space-y-1.5 font-mono text-[13px] ${showAll ? "max-h-[26rem] overflow-y-auto pr-2" : ""}`}
+                  className={`mt-3 flex min-h-0 flex-1 flex-col gap-1.5 font-mono text-[13px] ${
+                    showAll ? "max-h-[26rem] overflow-y-auto pr-2 md:max-h-none" : "md:justify-between md:py-1"
+                  }`}
                 >
-                  {(showAll ? list.songs : list.songs.slice(0, 8)).map((song, i) => (
-                    <li key={`${song.title}-${i}`} className="flex min-w-0 gap-3">
+                  {(showAll ? list.songs : list.songs.slice(0, SHOWN)).map((song, i) => (
+                    <li key={`${song.title}-${i}`} className="flex min-w-0 shrink-0 gap-3">
                       <span className="w-5 shrink-0 text-right text-muted-foreground">{i + 1}</span>
                       <span className="min-w-0 truncate">
                         {song.url ? (
@@ -64,7 +69,7 @@ export function Playlist() {
                 <p className="mt-3 text-[15px] text-muted-foreground">The song list is shy right now. Play it below instead.</p>
               )}
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[13px]">
-                {list.songs.length > 8 ? (
+                {list.songs.length > SHOWN ? (
                   <button
                     type="button"
                     onClick={() => setShowAll((v) => !v)}
