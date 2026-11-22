@@ -81,8 +81,8 @@ export function Playlist() {
               </div>
             </div>
 
-            {/* the player, only on request */}
-            <div className="min-h-[152px]">
+            {/* the player, only on request. The slot is always the player's real height, so nothing jumps. */}
+            <div className="h-[352px] self-start">
               {player ? (
                 <iframe
                   title={`${list.name} on Spotify`}
@@ -95,13 +95,38 @@ export function Playlist() {
                 <button
                   type="button"
                   onClick={() => setPlayer(true)}
-                  className="flex h-full min-h-[152px] w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-line font-mono text-[13px] transition-colors hover:border-accent hover:text-accent"
+                  aria-label="Play it here (loads the Spotify player)"
+                  className="group relative flex h-full w-full flex-col overflow-hidden rounded-xl border-2 border-dashed border-line text-left font-mono text-[13px] transition-colors hover:border-accent"
                 >
-                  <svg viewBox="0 0 7 7" className="size-8" shapeRendering="crispEdges" aria-hidden>
-                    <path d="M1 0h1v1h1v1h1v1h1v1H4v1H3v1H2v1H1z" fill="currentColor" />
-                  </svg>
-                  play it here
-                  <span className="text-[11px] text-muted-foreground">(loads the Spotify player)</span>
+                  {/* a ghost of the Spotify player, at its real size */}
+                  <span aria-hidden className="flex items-center gap-4 p-4 opacity-40">
+                    <span className="grid size-20 shrink-0 grid-cols-2 gap-px overflow-hidden rounded-md">
+                      <span className="bg-muted-foreground/50" />
+                      <span className="bg-muted-foreground/30" />
+                      <span className="bg-muted-foreground/30" />
+                      <span className="bg-muted-foreground/50" />
+                    </span>
+                    <span className="min-w-0 flex-1 space-y-2">
+                      <span className="block truncate font-sans text-lg font-bold">{list.name}</span>
+                      <span className="block h-2 w-24 rounded-sm bg-muted-foreground/40" />
+                    </span>
+                  </span>
+                  <span aria-hidden className="flex-1 space-y-3 border-t border-line px-4 pt-4 opacity-40">
+                    {list.songs.slice(0, 4).map((song, i) => (
+                      <span key={`${song.title}-${i}`} className="flex items-center gap-3">
+                        <span className="w-3 text-muted-foreground">{i + 1}</span>
+                        <span className="min-w-0 flex-1 truncate">{song.title}</span>
+                        <span className="h-2 w-8 rounded-sm bg-muted-foreground/40" />
+                      </span>
+                    ))}
+                  </span>
+                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-card/85 transition-colors group-hover:text-accent">
+                    <svg viewBox="0 0 7 7" className="size-8" shapeRendering="crispEdges" aria-hidden>
+                      <path d="M1 0h1v1h1v1h1v1h1v1H4v1H3v1H2v1H1z" fill="currentColor" />
+                    </svg>
+                    play it here
+                    <span className="text-[11px] text-muted-foreground">(loads the Spotify player)</span>
+                  </span>
                 </button>
               )}
             </div>
