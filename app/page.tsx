@@ -5,6 +5,7 @@ import { EasterEggs } from "@/components/easter-eggs";
 import { Voyager } from "@/components/voyager";
 import { Travel } from "@/components/travel";
 import { Playlist } from "@/components/playlist";
+import { NowListening } from "@/components/now-listening";
 import {
   Contact,
   Education,
@@ -32,6 +33,7 @@ export default function Home() {
           <Experience />
           <Education />
           <Travel />
+          <NowListening />
           <Playlist />
           <Contact />
         </main>

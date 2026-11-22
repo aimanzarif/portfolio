@@ -11,11 +11,6 @@ import { useMusic } from "@/lib/use-music";
  * talks to Spotify just by opening the site.
  */
 
-const time = (ms: number) => {
-  const s = Math.floor(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-};
-
 const PLAYLIST_ID = /^[A-Za-z0-9]{10,40}$/;
 
 export function Playlist() {
@@ -25,7 +20,6 @@ export function Playlist() {
   const list = music?.playlist;
   if (!list || !PLAYLIST_ID.test(list.id)) return null;
 
-  const now = music.now;
   const spotifyUrl = list.url ?? `https://open.spotify.com/playlist/${list.id}`;
 
   return (
@@ -39,38 +33,6 @@ export function Playlist() {
       </Reveal>
       <Reveal tilt>
         <article className="overflow-hidden rounded-xl border-2 border-line bg-card">
-          {/* now playing strip */}
-          <div className="flex items-center gap-3 border-b-2 border-dashed border-line px-5 py-3 font-mono text-[13px]">
-            <span
-              aria-hidden
-              className={`inline-block size-2.5 shrink-0 rounded-full ${
-                now.state === "playing" ? "led bg-accent" : now.state === "paused" ? "bg-[#e9b23a]" : "bg-muted-foreground/40"
-              }`}
-            />
-            {now.state === "playing" || now.state === "paused" ? (
-              <span className="min-w-0 truncate">
-                <span className="text-muted-foreground">{now.state === "playing" ? "now playing:" : "paused:"}</span>{" "}
-                {now.song.url ? (
-                  <a href={now.song.url} target="_blank" rel="noreferrer" className="font-bold hover:underline">
-                    {now.song.title}
-                  </a>
-                ) : (
-                  <span className="font-bold">{now.song.title}</span>
-                )}{" "}
-                <span className="text-muted-foreground">— {now.song.artists}</span>{" "}
-                <span className="text-muted-foreground/70">
-                  {time(now.progressMs)} / {time(now.durationMs)}
-                </span>
-              </span>
-            ) : now.state === "recent" ? (
-              <span className="min-w-0 truncate text-muted-foreground">
-                radio off. last played: <span className="text-foreground">{now.song.title}</span> — {now.song.artists}
-              </span>
-            ) : (
-              <span className="text-muted-foreground">radio off right now. zarif is probably sleeping.</span>
-            )}
-          </div>
-
           <div className="grid gap-6 p-5 md:grid-cols-[1fr_minmax(0,22rem)]">
             {/* track list from the API */}
             <div className="min-w-0">

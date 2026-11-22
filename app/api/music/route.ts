@@ -18,6 +18,12 @@ const PLAYLIST_TTL = 60 * 60_000;
 let nowCache: { at: number; value: NowPlaying } | null = null;
 let playlistCache: { at: number; value: Playlist | null } | null = null;
 
+/** Progress as of this response: the cached value can be up to NOW_TTL old. */
+function advanced(value: NowPlaying, since: number): NowPlaying {
+  if (value.state !== "playing") return value;
+  return { ...value, progressMs: Math.min(value.durationMs || Infinity, value.progressMs + (Date.now() - since)) };
+}
+
 async function now(): Promise<NowPlaying> {
   if (!nowCache || Date.now() - nowCache.at > NOW_TTL) {
     let value: NowPlaying;
@@ -29,7 +35,7 @@ async function now(): Promise<NowPlaying> {
     }
     nowCache = { at: Date.now(), value };
   }
-  return nowCache.value;
+  return advanced(nowCache.value, nowCache.at);
 }
 
 async function playlist(): Promise<Playlist | null> {

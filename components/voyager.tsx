@@ -11,6 +11,8 @@ import { ZarifSprite } from "@/components/zarif-sprite";
 import { MascotRoom, type Kopi } from "@/components/mascot-room";
 import { useWeather } from "@/lib/use-weather";
 import { useMusic } from "@/lib/use-music";
+import { useEmbedPlayback } from "@/lib/embed-playback";
+import { songForUri } from "@/lib/music-shared";
 import { onGaji } from "@/lib/gaji";
 
 /*
@@ -84,6 +86,11 @@ export function Voyager() {
   const music = useMusic();
   const playing = music?.now.state === "playing" ? music.now.song : null;
   const songText = playing ? `${playing.title} by ${playing.artists}` : "";
+  // A visitor playing the embedded player on this page also gets the radio going.
+  const embed = useEmbedPlayback();
+  const visitorSong = embed.playing ? songForUri(embed.uri, music?.playlist?.songs) : null;
+  const radioOn = Boolean(playing) || embed.playing;
+  const lastVisitorUri = useRef<string | null>(null);
   const hot = isHot(vitals);
   const [reaction, setReaction] = useState<"happy" | "shock" | "groggy" | null>(null);
   const [typing, setTyping] = useState(false);
@@ -153,6 +160,17 @@ export function Voyager() {
       }),
     [later, react, say],
   );
+
+  // Zarif notices when a visitor plays a song from his playlist.
+  useEffect(() => {
+    if (!embed.playing || !embed.uri || embed.uri === lastVisitorUri.current) return;
+    lastVisitorUri.current = embed.uri;
+    say(
+      visitorSong ? `eh, you're playing ${visitorSong.title}? good taste. that one hits at 2am.` : "eh, you pressed play! good taste.",
+      4800,
+      "zarif",
+    );
+  }, [embed.playing, embed.uri, visitorSong, say]);
 
   // Konami "gaji masuk" cheat: make it rain ringgit for a few seconds.
   useEffect(
@@ -319,14 +337,14 @@ export function Voyager() {
           serviceDown={state === "degraded"}
           kopi={kopiFor(klang?.hour ?? 9)}
           money={money}
-          radio={music?.now.state === "playing" ? "on" : music?.now.state === "paused" ? "paused" : "off"}
+          radio={radioOn ? "on" : music?.now.state === "paused" ? "paused" : "off"}
         />
       <button
         type="button"
         onClick={onZarif}
         aria-label="Zarif, in pixel form. Click to say hai."
         title="zarif"
-        className={`${playing ? "zarif-sway" : "voyager-bob-alt"} pointer-events-auto relative rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent`}
+        className={`${radioOn ? "zarif-sway" : "voyager-bob-alt"} pointer-events-auto relative rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent`}
       >
         <ZarifSprite blink={zarifBlink} worried={state === "degraded" || hot} className="h-auto w-[26px] overflow-visible sm:w-[40px]" />
       </button>
