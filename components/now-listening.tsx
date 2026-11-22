@@ -117,11 +117,16 @@ export function NowListening() {
                 </p>
                 {live.song ? <p className="truncate text-[15px] text-muted-foreground">{live.song.artists}</p> : null}
                 <div className="mt-4 flex items-center gap-3 font-mono text-[12px] text-muted-foreground">
-                  <span>{clock(position)}</span>
+                  <span className="tabular-nums">{clock(position)}</span>
                   <span className="relative h-2 flex-1 overflow-hidden rounded-sm border border-line" aria-hidden>
-                    <span className="absolute inset-y-0 left-0 bg-accent" style={{ width: `${pct}%` }} />
+                    <span
+                      className="absolute inset-y-0 left-0 bg-accent transition-[width] duration-1000 ease-linear motion-reduce:transition-none"
+                      style={{ width: `${pct}%` }}
+                    />
                   </span>
-                  <span>{clock(live.duration)}</span>
+                  <span className="tabular-nums" title={`length ${clock(live.duration)}`}>
+                    -{clock(Math.max(0, live.duration - position))}
+                  </span>
                 </div>
               </div>
             </div>
