@@ -22,7 +22,7 @@ export function AboutMe({ children }: { children: ReactNode }) {
       >
         ✂ off the clock
       </span>
-      <Container className="pt-14 md:pt-20">
+      <Container className="pt-14 pb-3 md:pt-20 md:pb-5">
         <Reveal>
           <SectionHeading
             className="mb-0 md:mb-0"
@@ -40,7 +40,8 @@ export function AboutMe({ children }: { children: ReactNode }) {
           </nav>
         </Reveal>
       </Container>
-      {children}
+      {/* the three sections sit closer together than the work sections do */}
+      <div className="[&>section]:py-5 md:[&>section]:py-7">{children}</div>
     </div>
   );
 }
