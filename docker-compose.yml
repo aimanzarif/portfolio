@@ -25,6 +25,8 @@ services:
       SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET:-}
       SPOTIFY_REFRESH_TOKEN: ${SPOTIFY_REFRESH_TOKEN:-}
       SPOTIFY_PLAYLIST_ID: ${SPOTIFY_PLAYLIST_ID:-}
+      MUSIC_DELAY_MINUTES: ${MUSIC_DELAY_MINUTES:-15}
+      MUSIC_QUIET_HOURS: ${MUSIC_QUIET_HOURS:-0-7}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://zarep.my}
     extra_hosts:
       # Lets the container reach services on the laptop itself (Netdata)

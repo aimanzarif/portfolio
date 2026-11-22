@@ -9,7 +9,7 @@ import { useMusic } from "@/lib/use-music";
 import type { Song } from "@/lib/spotify";
 
 /*
- * "Now listening": the song playing right now, big. Priority:
+ * "Now listening": the song playing (on Spotify, 15 minutes ago; see lib/music-feed), big. Priority:
  *   1. the embedded player on this page, if this visitor pressed play;
  *   2. what Zarif is playing on Spotify (his app, phone or speaker);
  *   3. otherwise "Flow state mode": no music, probably debugging in silence.
@@ -86,13 +86,15 @@ export function NowListening() {
     <Section id="now-listening">
       <Reveal>
         <SectionHeading
-          eyebrow={live ? (live.source === "page" ? "Playing on this page" : "Live from my headphones") : "Headphones off"}
+          eyebrow={live ? (live.source === "page" ? "Playing on this page" : music.delayMinutes ? `From my headphones · ${music.delayMinutes} min ago` : "Live from my headphones") : "Headphones off"}
           title={live ? "Now listening." : "Flow state mode."}
           copy={
             live
               ? live.source === "page"
                 ? "You pressed play on my playlist. Good taste, I see."
-                : "Straight from my Spotify, right now. Yes, it's slow pop again."
+                : music.delayMinutes
+                  ? `Straight from my Spotify, on a ${music.delayMinutes}-minute delay. Yes, it's slow pop again.`
+                  : "Straight from my Spotify, right now. Yes, it's slow pop again."
               : "No music right now. Probably debugging something in total silence. Jangan kacau ah."
           }
         />

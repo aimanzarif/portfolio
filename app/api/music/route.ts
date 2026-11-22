@@ -1,50 +1,26 @@
-import { getNowPlaying, getPlaylist, PLAYLIST_ID, spotifyEnabled, type NowPlaying, type Playlist } from "@/lib/spotify";
+import { delayedNowPlaying, delayMinutes } from "@/lib/music-feed";
+import { getPlaylist, PLAYLIST_ID, spotifyEnabled, type NowPlaying, type Playlist } from "@/lib/spotify";
 
 /*
  * What's on the radio, for the mascot room, the terminal (`np`, `playlist`) and the playlist card.
- * Spotify is asked at most every 10 s (now playing) and every hour (playlist), however many visitors.
+ * "Now playing" comes from lib/music-feed: 15 minutes behind, and quiet at night. The playlist is
+ * asked from Spotify at most once an hour, however many visitors.
  */
 
 export type Music = {
   enabled: boolean;
+  /** How far behind "now" is, in minutes (0 = live). */
+  delayMinutes: number;
   now: NowPlaying;
   playlist: Playlist | null;
   checkedAt: string;
 };
 
-const NOW_TTL = 10_000;
 const PLAYLIST_TTL = 60 * 60_000;
 
-let nowCache: { at: number; value: NowPlaying } | null = null;
 let playlistCache: { at: number; value: Playlist | null } | null = null;
 // One Spotify call at a time: visitors arriving while it runs wait for the same answer.
-let nowInflight: Promise<void> | null = null;
 let playlistInflight: Promise<void> | null = null;
-
-/** Progress as of this response: the cached value can be up to NOW_TTL old. */
-function advanced(value: NowPlaying, since: number): NowPlaying {
-  if (value.state !== "playing") return value;
-  return { ...value, progressMs: Math.min(value.durationMs || Infinity, value.progressMs + (Date.now() - since)) };
-}
-
-async function now(): Promise<NowPlaying> {
-  if (!nowCache || Date.now() - nowCache.at > NOW_TTL) {
-    nowInflight ??= (async () => {
-      let value: NowPlaying;
-      try {
-        value = await getNowPlaying();
-      } catch (error) {
-        console.warn(`[music] ${error instanceof Error ? error.message : error}`);
-        value = nowCache?.value ?? { state: "idle" };
-      }
-      nowCache = { at: Date.now(), value };
-    })().finally(() => {
-      nowInflight = null;
-    });
-    await nowInflight;
-  }
-  return advanced(nowCache!.value, nowCache!.at);
-}
 
 async function playlist(): Promise<Playlist | null> {
   if (!playlistCache || Date.now() - playlistCache.at > PLAYLIST_TTL) {
@@ -70,7 +46,8 @@ export async function GET() {
   const enabled = spotifyEnabled();
   const body: Music = {
     enabled,
-    now: enabled ? await now() : { state: "idle" },
+    delayMinutes: delayMinutes(),
+    now: enabled ? delayedNowPlaying() : { state: "idle" },
     playlist: enabled ? await playlist() : PLAYLIST_ID ? { name: "playlist", url: null, id: PLAYLIST_ID, songs: [], total: 0 } : null,
     checkedAt: new Date().toISOString(),
   };
