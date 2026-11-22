@@ -59,6 +59,7 @@ const ARGS: Record<string, string[]> = {
   ping: ["zarep.my"],
   ssh: ["zarif@zarep.my"],
   guestbook: ["sign "],
+  playlist: ["all"],
 };
 
 /** Shell-style completion: returns the completed input, or the candidates when it's ambiguous. */
@@ -153,7 +154,7 @@ ping          measure the trip to my laptop
 ssh zarif     talk to me (opens your email)
 guestbook     read the guestbook (sign: guestbook sign <message>)
 np            what zarif is listening to right now
-playlist      his slow pop playlist
+playlist      his slow pop playlist (playlist all: every song)
 eggs          easter egg progress, with hints
 history       what you typed so far
 cv            download my cv
@@ -334,15 +335,15 @@ export function Terminal() {
     }
 
     // Music: now playing / playlist (fetched live)
-    const musicCmd = raw.trim().toLowerCase();
-    if (musicCmd === "np" || musicCmd === "playlist") {
+    const musicCmd = raw.trim().toLowerCase().replace(/\s+/g, " ");
+    if (musicCmd === "np" || musicCmd === "playlist" || musicCmd === "playlist all") {
       setValue("");
       setCursor(null);
       setHistory((prev) => [...prev, raw.trim()]);
       push("cmd", raw);
-      emitVoyager({ type: "command", command: musicCmd });
+      emitVoyager({ type: "command", command: musicCmd.split(" ")[0] });
       const id = push("out", "tuning the radio...");
-      const body = musicCmd === "np" ? await nowPlayingOutput() : await playlistOutput();
+      const body = musicCmd === "np" ? await nowPlayingOutput() : await playlistOutput(musicCmd === "playlist all");
       setLines((prev) => prev.map((line) => (line.id === id ? { ...line, body } : line)));
       return;
     }

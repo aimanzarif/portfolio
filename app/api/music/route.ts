@@ -40,7 +40,7 @@ async function playlist(): Promise<Playlist | null> {
     } catch (error) {
       console.warn(`[music] ${error instanceof Error ? error.message : error}`);
       // Keep the last good list; without one, still let the card embed the playlist by id.
-      value = playlistCache?.value ?? (PLAYLIST_ID ? { name: "playlist", url: null, id: PLAYLIST_ID, songs: [] } : null);
+      value = playlistCache?.value ?? (PLAYLIST_ID ? { name: "playlist", url: null, id: PLAYLIST_ID, songs: [], total: 0 } : null);
     }
     playlistCache = { at: Date.now(), value };
   }
@@ -52,7 +52,7 @@ export async function GET() {
   const body: Music = {
     enabled,
     now: enabled ? await now() : { state: "idle" },
-    playlist: enabled ? await playlist() : PLAYLIST_ID ? { name: "playlist", url: null, id: PLAYLIST_ID, songs: [] } : null,
+    playlist: enabled ? await playlist() : PLAYLIST_ID ? { name: "playlist", url: null, id: PLAYLIST_ID, songs: [], total: 0 } : null,
     checkedAt: new Date().toISOString(),
   };
   return Response.json(body, { headers: { "Cache-Control": "public, max-age=15", "X-Robots-Tag": "noindex" } });

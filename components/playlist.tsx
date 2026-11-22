@@ -21,6 +21,7 @@ const PLAYLIST_ID = /^[A-Za-z0-9]{10,40}$/;
 export function Playlist() {
   const music = useMusic();
   const [player, setPlayer] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   const list = music?.playlist;
   if (!list || !PLAYLIST_ID.test(list.id)) return null;
 
@@ -73,10 +74,15 @@ export function Playlist() {
           <div className="grid gap-6 p-5 md:grid-cols-[1fr_minmax(0,22rem)]">
             {/* track list from the API */}
             <div className="min-w-0">
-              <p className="font-mono text-[11px] tracking-wide text-muted-foreground uppercase">{list.name}</p>
+              <p className="font-mono text-[11px] tracking-wide text-muted-foreground uppercase">
+                {list.name} · {list.total} songs
+              </p>
               {list.songs.length ? (
-                <ol className="mt-3 space-y-1.5 font-mono text-[13px]">
-                  {list.songs.slice(0, 8).map((song, i) => (
+                <ol
+                  id="playlist-songs"
+                  className={`mt-3 space-y-1.5 font-mono text-[13px] ${showAll ? "max-h-[26rem] overflow-y-auto pr-2" : ""}`}
+                >
+                  {(showAll ? list.songs : list.songs.slice(0, 8)).map((song, i) => (
                     <li key={`${song.title}-${i}`} className="flex min-w-0 gap-3">
                       <span className="w-5 shrink-0 text-right text-muted-foreground">{i + 1}</span>
                       <span className="min-w-0 truncate">
@@ -95,14 +101,22 @@ export function Playlist() {
               ) : (
                 <p className="mt-3 text-[15px] text-muted-foreground">The song list is shy right now. Play it below instead.</p>
               )}
-              <a
-                href={spotifyUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-block font-mono text-[13px] text-accent underline underline-offset-4"
-              >
-                open the full playlist in spotify →
-              </a>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[13px]">
+                {list.songs.length > 8 ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowAll((v) => !v)}
+                    aria-expanded={showAll}
+                    aria-controls="playlist-songs"
+                    className="underline underline-offset-4"
+                  >
+                    {showAll ? "show less" : `show all ${list.total} songs`}
+                  </button>
+                ) : null}
+                <a href={spotifyUrl} target="_blank" rel="noreferrer" className="text-accent underline underline-offset-4">
+                  open in spotify →
+                </a>
+              </div>
             </div>
 
             {/* the player, only on request */}

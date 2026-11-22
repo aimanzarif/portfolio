@@ -50,7 +50,7 @@ export async function nowPlayingOutput(): Promise<ReactNode> {
   return "radio off. zarif is either sleeping or debugging in silence.";
 }
 
-export async function playlistOutput(): Promise<ReactNode> {
+export async function playlistOutput(all = false): Promise<ReactNode> {
   const music = await loadMusic();
   const list = music?.playlist;
   if (!list) return "no playlist yet. zarif still choosing. (it's hard ok)";
@@ -67,12 +67,22 @@ export async function playlistOutput(): Promise<ReactNode> {
   }
   return (
     <span className="block">
-      <span className="block text-accent">{list.name}: slow pop, on repeat</span>
-      {list.songs.slice(0, 10).map((song, i) => (
+      <span className="block text-accent">
+        {list.name}: {list.total} songs, slow pop, on repeat
+      </span>
+      {(all ? list.songs : list.songs.slice(0, 10)).map((song, i) => (
         <span key={`${song.title}-${i}`} className="block">
           {String(i + 1).padStart(2, " ")}. <SongLink song={song} />
         </span>
       ))}
+      {!all && list.songs.length > 10 ? (
+        <span className="mt-1 block text-muted-foreground">
+          ...and {list.total - 10} more. type <span className="text-foreground">playlist all</span> for the rest.
+        </span>
+      ) : null}
+      {all && list.total > list.songs.length ? (
+        <span className="mt-1 block text-muted-foreground">...plus {list.total - list.songs.length} more on spotify.</span>
+      ) : null}
       <span className="mt-1 block">
         full playlist:{" "}
         <a href={list.url ?? `https://open.spotify.com/playlist/${list.id}`} target="_blank" rel="noreferrer" className="underline">

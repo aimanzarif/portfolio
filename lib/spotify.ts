@@ -27,7 +27,7 @@ export type NowPlaying =
   | { state: "playing" | "paused"; song: Song; progressMs: number; durationMs: number }
   | { state: "recent"; song: Song; playedAt: string }
   | { state: "idle" };
-export type Playlist = { name: string; url: string | null; id: string; songs: Song[] };
+export type Playlist = { name: string; url: string | null; id: string; songs: Song[]; total: number };
 
 let token: { value: string; expiresAt: number } | null = null;
 
@@ -118,7 +118,8 @@ export async function getNowPlaying(): Promise<NowPlaying> {
   return { state: "idle" };
 }
 
-export async function getPlaylist(limit = 12): Promise<Playlist | null> {
+/** The playlist object carries its first 100 songs, which is plenty here. */
+export async function getPlaylist(limit = 100): Promise<Playlist | null> {
   if (!PLAYLIST_ID) return null;
   const res = await api(`/playlists/${encodeURIComponent(PLAYLIST_ID)}`);
   if (!res.ok) throw new Error(`playlist: HTTP ${res.status}`);
@@ -126,10 +127,13 @@ export async function getPlaylist(limit = 12): Promise<Playlist | null> {
     name?: string;
     external_urls?: { spotify?: string };
     // Feb 2026 shape, then the older one
-    items?: { items?: { item?: RawTrack }[] };
-    tracks?: { items?: { track?: RawTrack }[] };
+    items?: { total?: number; items?: { item?: RawTrack }[] };
+    tracks?: { total?: number; items?: { track?: RawTrack }[] };
   };
   const raw = json.items?.items?.map((i) => i.item) ?? json.tracks?.items?.map((i) => i.track) ?? [];
   const songs = raw.map(toSong).filter((s): s is Song => s !== null).slice(0, limit);
-  return { name: clean(json.name, 80) || "playlist", url: spotifyUrl(json.external_urls?.spotify), id: PLAYLIST_ID, songs };
+  // Spotify's total also counts podcast episodes; when we have every item, count only real songs.
+  const reported = json.items?.total ?? json.tracks?.total ?? raw.length;
+  const total = raw.length >= reported ? songs.length : Math.max(songs.length, reported);
+  return { name: clean(json.name, 80) || "playlist", url: spotifyUrl(json.external_urls?.spotify), id: PLAYLIST_ID, songs, total };
 }
