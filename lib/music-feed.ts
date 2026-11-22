@@ -5,7 +5,8 @@ import { getNowPlaying, spotifyEnabled, type NowPlaying } from "@/lib/spotify";
  *
  *   - Delay: Spotify is polled in the background every 30 s and the answers are kept for a short
  *     while. Visitors only ever get what was playing MUSIC_DELAY_MINUTES ago (default 15), so the
- *     site can't be used to tell what Zarif is doing right now.
+ *     site can't be used to tell what Zarif is doing right now. The delay is deliberately not
+ *     mentioned anywhere visitors can see, including the API response.
  *   - Quiet hours: during MUSIC_QUIET_HOURS (default 0-7, Klang time) Spotify isn't asked at all and
  *     the section shows "Flow state mode". Because of the delay, the first songs after quiet hours
  *     appear 15 minutes after they end.
@@ -21,8 +22,6 @@ const delayMs = () => {
   const minutes = Number(process.env.MUSIC_DELAY_MINUTES ?? 15);
   return Number.isFinite(minutes) && minutes >= 0 ? minutes * 60_000 : 15 * 60_000;
 };
-
-export const delayMinutes = () => Math.round(delayMs() / 60_000);
 
 /** "0-7" = from 00:00 up to 07:00. "22-6" wraps past midnight. "off" or "" = no quiet hours. */
 function quietRange(): [number, number] | null {

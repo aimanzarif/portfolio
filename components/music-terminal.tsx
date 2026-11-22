@@ -31,10 +31,10 @@ export async function nowPlayingOutput(): Promise<ReactNode> {
   if (now.state === "playing" || now.state === "paused") {
     return (
       <span className="block">
-        <span className="text-accent">{now.state === "playing" ? "▶ playing" : "❚❚ paused on"}</span>{" "}
+        <span className="text-accent">{now.state === "playing" ? "▶ now playing" : "❚❚ paused on"}</span>{" "}
         <SongLink song={now.song} />{" "}
         <span className="text-muted-foreground">
-          [{time(now.progressMs)} / {time(now.durationMs)}]{music.delayMinutes ? ` · ${music.delayMinutes} min ago` : ""}
+          [{time(now.progressMs)} / {time(now.durationMs)}]
         </span>
       </span>
     );

@@ -1,4 +1,4 @@
-import { delayedNowPlaying, delayMinutes } from "@/lib/music-feed";
+import { delayedNowPlaying } from "@/lib/music-feed";
 import { getPlaylist, PLAYLIST_ID, spotifyEnabled, type NowPlaying, type Playlist } from "@/lib/spotify";
 
 /*
@@ -9,8 +9,6 @@ import { getPlaylist, PLAYLIST_ID, spotifyEnabled, type NowPlaying, type Playlis
 
 export type Music = {
   enabled: boolean;
-  /** How far behind "now" is, in minutes (0 = live). */
-  delayMinutes: number;
   now: NowPlaying;
   playlist: Playlist | null;
   checkedAt: string;
@@ -46,7 +44,6 @@ export async function GET() {
   const enabled = spotifyEnabled();
   const body: Music = {
     enabled,
-    delayMinutes: delayMinutes(),
     now: enabled ? delayedNowPlaying() : { state: "idle" },
     playlist: enabled ? await playlist() : PLAYLIST_ID ? { name: "playlist", url: null, id: PLAYLIST_ID, songs: [], total: 0 } : null,
     checkedAt: new Date().toISOString(),
