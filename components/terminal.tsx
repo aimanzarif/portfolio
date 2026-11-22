@@ -7,6 +7,7 @@ import type { StatusReport } from "@/lib/status";
 import { EGGS, eggHints, findEgg, foundEggs } from "@/lib/eggs";
 import { emitVoyager } from "@/lib/voyager-events";
 import { GUESTBOOK_MAX, GuestbookSign, guestbookList } from "@/components/guestbook";
+import { nowPlayingOutput, playlistOutput } from "@/components/music-terminal";
 
 type Line = { id: number; kind: "cmd" | "out"; body: ReactNode };
 
@@ -49,7 +50,7 @@ async function statusLine(): Promise<ReactNode> {
 
 const HIDDEN = new Set(["sudo", "rm", "kopi", "teh", "coffee", "makan", "lunch", "travel", "exit", "logout", "neofetch", "hello", "hi", "hai"]);
 
-const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "open", "status", "ping", "ssh", "guestbook", "eggs", "history", "cv", "contact", "clear"];
+const COMMANDS = ["help", "whoami", "ls", "cd", "cat", "open", "status", "ping", "ssh", "guestbook", "np", "playlist", "eggs", "history", "cv", "contact", "clear"];
 const ARGS: Record<string, string[]> = {
   open: projects.map((p) => p.id),
   cd: ["projects", "homelab", "secrets"],
@@ -151,6 +152,8 @@ status        live service status
 ping          measure the trip to my laptop
 ssh zarif     talk to me (opens your email)
 guestbook     read the guestbook (sign: guestbook sign <message>)
+np            what zarif is listening to right now
+playlist      his slow pop playlist
 eggs          easter egg progress, with hints
 history       what you typed so far
 cv            download my cv
@@ -327,6 +330,20 @@ export function Terminal() {
       push("cmd", name || "(anon)");
       push("out", <GuestbookSign message={awaitingName} name={name} />);
       setAwaitingName(null);
+      return;
+    }
+
+    // Music: now playing / playlist (fetched live)
+    const musicCmd = raw.trim().toLowerCase();
+    if (musicCmd === "np" || musicCmd === "playlist") {
+      setValue("");
+      setCursor(null);
+      setHistory((prev) => [...prev, raw.trim()]);
+      push("cmd", raw);
+      emitVoyager({ type: "command", command: musicCmd });
+      const id = push("out", "tuning the radio...");
+      const body = musicCmd === "np" ? await nowPlayingOutput() : await playlistOutput();
+      setLines((prev) => prev.map((line) => (line.id === id ? { ...line, body } : line)));
       return;
     }
 

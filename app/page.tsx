@@ -4,6 +4,7 @@ import { InPageNav } from "@/components/in-page-nav";
 import { EasterEggs } from "@/components/easter-eggs";
 import { Voyager } from "@/components/voyager";
 import { Travel } from "@/components/travel";
+import { Playlist } from "@/components/playlist";
 import {
   Contact,
   Education,
@@ -31,6 +32,7 @@ export default function Home() {
           <Experience />
           <Education />
           <Travel />
+          <Playlist />
           <Contact />
         </main>
       </div>

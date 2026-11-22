@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { ZarifSprite } from "@/components/zarif-sprite";
 import { MascotRoom, type Kopi } from "@/components/mascot-room";
 import { useWeather } from "@/lib/use-weather";
+import { useMusic } from "@/lib/use-music";
 import { onGaji } from "@/lib/gaji";
 
 /*
@@ -41,6 +42,14 @@ const IDLE_LINES = [
   "zarif cleans my fan sometimes. sometimes.",
   "LIVE",
   "if i'm warm, it's not a bug. it's a feature.",
+  "MUSIC",
+];
+
+/* Voyager on Zarif's music taste. {song} becomes "Title by Artist". */
+const MUSIC_LINES = [
+  "zarif playing {song} again. something broke ah?",
+  "{song} on the radio. he's either debugging or in his feelings.",
+  "slow pop at this hour. classic zarif. ({song})",
 ];
 
 const SHOCK_WORDS = ["rm", "sudo"];
@@ -72,6 +81,9 @@ export function Voyager() {
   const { state, up, total } = summarize(useStatus());
   const vitals = useVitals();
   const weather = useWeather();
+  const music = useMusic();
+  const playing = music?.now.state === "playing" ? music.now.song : null;
+  const songText = playing ? `${playing.title} by ${playing.artists}` : "";
   const hot = isHot(vitals);
   const [reaction, setReaction] = useState<"happy" | "shock" | "groggy" | null>(null);
   const [typing, setTyping] = useState(false);
@@ -218,7 +230,12 @@ export function Voyager() {
       return;
     }
     react("happy", 1400);
-    const line = IDLE_LINES[lineIndex.current % IDLE_LINES.length];
+    let line = IDLE_LINES[lineIndex.current % IDLE_LINES.length];
+    if (line === "MUSIC") {
+      line = playing
+        ? MUSIC_LINES[lineIndex.current % MUSIC_LINES.length].replace("{song}", songText)
+        : "radio's quiet. zarif must be concentrating. or asleep.";
+    }
     say(
       line === "LIVE"
         ? vitals?.ok
@@ -238,7 +255,12 @@ export function Voyager() {
       say("shh, voyager's sleeping. i should be too.", 4200, "zarif");
       return;
     }
-    say(ZARIF_LINES[zarifLine.current % ZARIF_LINES.length], 4200, "zarif");
+    // While a song is playing, every other click talks about it.
+    if (playing && zarifLine.current % 2 === 0) {
+      say(`tengah layan ${songText}. slow pop is the best debugging music.`, 4800, "zarif");
+    } else {
+      say(ZARIF_LINES[zarifLine.current % ZARIF_LINES.length], 4200, "zarif");
+    }
     zarifLine.current += 1;
   };
 
@@ -297,13 +319,14 @@ export function Voyager() {
           serviceDown={state === "degraded"}
           kopi={kopiFor(klang?.hour ?? 9)}
           money={money}
+          radio={music?.now.state === "playing" ? "on" : music?.now.state === "paused" ? "paused" : "off"}
         />
       <button
         type="button"
         onClick={onZarif}
         aria-label="Zarif, in pixel form. Click to say hai."
         title="zarif"
-        className="voyager-bob-alt pointer-events-auto relative rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent"
+        className={`${playing ? "zarif-sway" : "voyager-bob-alt"} pointer-events-auto relative rounded-xl p-1 transition-transform hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-accent`}
       >
         <ZarifSprite blink={zarifBlink} worried={state === "degraded" || hot} className="h-auto w-[26px] overflow-visible sm:w-[40px]" />
       </button>

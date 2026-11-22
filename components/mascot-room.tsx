@@ -3,10 +3,11 @@ import type { Sky } from "@/lib/weather";
 /*
  * Zarif's little room behind the mascots. Everything in it is live:
  * the window follows the real Klang sunrise/sunset and weather, the rack poster follows Uptime Kuma,
- * and the kopi on the shelf follows the time of day.
+ * the kopi on the shelf follows the time of day, and the radio plays when Zarif is on Spotify.
  */
 
 export type Kopi = "full" | "half" | "empty" | "double";
+export type Radio = "off" | "on" | "paused";
 
 type Rect = [x: number, y: number, w: number, h: number, fill: string];
 
@@ -65,9 +66,23 @@ function cup(x: number, level: "full" | "half" | "empty"): Rect[] {
 }
 
 function kopiRects(kopi: Kopi): Rect[] {
-  const shelf: Rect[] = [[18, CUP_Y + 2, 8, 1, "#5e3a20"]];
-  if (kopi === "double") return [...shelf, ...cup(18, "empty"), ...cup(22, "full")];
-  return [...shelf, ...cup(20, kopi)];
+  const shelf: Rect[] = [[17, CUP_Y + 2, 13, 1, "#5e3a20"]];
+  if (kopi === "double") return [...shelf, ...cup(17, "empty"), ...cup(21, "full")];
+  return [...shelf, ...cup(19, kopi)];
+}
+
+/* Small retro radio on the shelf, right of the kopi. LED: sage = playing, amber = paused. */
+function radioRects(radio: Radio): Rect[] {
+  return [
+    [29, 4, 1, 4, "#55595a"], // antenna
+    [26, 7, 3, 1, "#3a2a24"], // handle
+    [25, 8, 5, 4, "#c2553f"], // body
+    [25, 9, 2, 2, "#3a2a24"], // speaker
+    [26, 9, 1, 1, "#5a4038"],
+    [27, 9, 2, 1, "#f4ead9"], // dial
+    [28, 10, 1, 1, "#e9b23a"], // knob
+    [29, 9, 1, 1, radio === "on" ? "#a9d3b8" : radio === "paused" ? "#e9b23a" : "#3a2a24"], // LED
+  ];
 }
 
 export function MascotRoom({
@@ -76,6 +91,7 @@ export function MascotRoom({
   serviceDown,
   kopi,
   money = false,
+  radio = "off",
 }: {
   night: boolean;
   sky: Sky;
@@ -83,8 +99,10 @@ export function MascotRoom({
   kopi: Kopi;
   /** Konami "gaji masuk" cheat: ringgit notes rain down. */
   money?: boolean;
+  /** Spotify: "on" plays notes, "paused" shows an amber light. */
+  radio?: Radio;
 }) {
-  const steamX = kopi === "double" ? 23 : 21;
+  const steamX = kopi === "double" ? 22 : 20;
   const steaming = kopi === "full" || kopi === "double";
   const wet = sky === "rain" || sky === "storm";
 
@@ -99,13 +117,13 @@ export function MascotRoom({
     [10, 3, 1, 10, FRAME],
     [4, 8, 12, 1, FRAME],
     // rack poster
-    [27, 3, 10, 9, "#2f6b4f"],
-    [28, 4, 8, 7, "#1c1f20"],
-    [29, 5, 6, 1, "#55595a"],
-    [29, 7, 6, 1, "#55595a"],
-    [29, 9, 6, 1, "#55595a"],
-    [34, 7, 1, 1, "#a9d3b8"],
-    [34, 9, 1, 1, "#e9b23a"],
+    [30, 3, 8, 9, "#2f6b4f"],
+    [31, 4, 6, 7, "#1c1f20"],
+    [32, 5, 3, 1, "#55595a"],
+    [32, 7, 3, 1, "#55595a"],
+    [32, 9, 3, 1, "#55595a"],
+    [36, 7, 1, 1, "#a9d3b8"],
+    [36, 9, 1, 1, "#e9b23a"],
     // pokok
     [36, 18, 1, 3, "#4f8a64"],
     [37, 16, 1, 5, "#3f7454"],
@@ -114,6 +132,7 @@ export function MascotRoom({
     [35, 21, 4, 3, "#b0643a"],
     [36, 24, 2, 1, "#8f4f2c"],
     ...kopiRects(kopi),
+    ...radioRects(radio),
   ];
 
   return (
@@ -139,12 +158,25 @@ export function MascotRoom({
           <rect key={`b${i}`} x={x} y={y} width={w} height={h} fill={fill} />
         ))}
         {/* top poster light mirrors Uptime Kuma: red and blinking when something is down */}
-        <rect x="34" y="5" width="1" height="1" fill={serviceDown ? "#ff6b5e" : "#a9d3b8"} className={serviceDown ? "led" : undefined} />
+        <rect x="36" y="5" width="1" height="1" fill={serviceDown ? "#ff6b5e" : "#a9d3b8"} className={serviceDown ? "led" : undefined} />
         {steaming ? (
           <>
             <rect x={steamX} y={CUP_Y - 2} width="1" height="1" fill="#f7f3ea" className="voyager-z" />
             <rect x={steamX + 1} y={CUP_Y - 3} width="1" height="1" fill="#f7f3ea" className="voyager-z" style={{ animationDelay: "0.8s" }} />
           </>
+        ) : null}
+        {radio === "on" ? (
+          <g>
+            <g className="room-note">
+              <rect x="27" y="4" width="1" height="3" fill="#a9d3b8" />
+              <rect x="26" y="6" width="1" height="1" fill="#a9d3b8" />
+            </g>
+            <g className="room-note" style={{ animationDelay: "1.1s" }}>
+              <rect x="24" y="3" width="1" height="3" fill="#e9b23a" />
+              <rect x="23" y="5" width="1" height="1" fill="#e9b23a" />
+              <rect x="25" y="3" width="1" height="1" fill="#e9b23a" />
+            </g>
+          </g>
         ) : null}
         {money ? (
           <g>
