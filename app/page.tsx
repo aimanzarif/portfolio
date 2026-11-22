@@ -6,6 +6,7 @@ import { Voyager } from "@/components/voyager";
 import { Travel } from "@/components/travel";
 import { Playlist } from "@/components/playlist";
 import { NowListening } from "@/components/now-listening";
+import { AboutMe } from "@/components/about-me";
 import {
   Contact,
   Education,
@@ -32,9 +33,11 @@ export default function Home() {
           <Incident />
           <Experience />
           <Education />
-          <Travel />
-          <NowListening />
-          <Playlist />
+          <AboutMe>
+            <Travel />
+            <NowListening />
+            <Playlist />
+          </AboutMe>
           <Contact />
         </main>
       </div>
