@@ -44,9 +44,49 @@ function onMessage(event: MessageEvent) {
   if (changed) listeners.forEach((fn) => fn());
 }
 
+/*
+ * When you are signed in to Spotify, the embed plays through your own account. Refreshing or leaving
+ * the page kills it without telling Spotify, so for a little while Spotify still says "playing".
+ * Remember where our player stopped, so that leftover "playing" can be ignored (see use-music).
+ */
+const ECHO_KEY = "embed-stopped";
+export type EmbedEcho = { id: string; position: number; at: number };
+
+function onPageHide() {
+  try {
+    const id = state.uri?.split(":")[2];
+    if (state.playing && id) {
+      const echo: EmbedEcho = { id, position: state.position + (Date.now() - state.at), at: Date.now() };
+      sessionStorage.setItem(ECHO_KEY, JSON.stringify(echo));
+    } else {
+      sessionStorage.removeItem(ECHO_KEY);
+    }
+  } catch {
+    /* storage unavailable: nothing to remember */
+  }
+}
+
+export function readEmbedEcho(): EmbedEcho | null {
+  try {
+    const v = JSON.parse(sessionStorage.getItem(ECHO_KEY) ?? "null") as EmbedEcho | null;
+    return v && typeof v.id === "string" && /^[A-Za-z0-9]+$/.test(v.id) && Number.isFinite(v.position) && Number.isFinite(v.at) ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+export function clearEmbedEcho() {
+  try {
+    sessionStorage.removeItem(ECHO_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 function subscribe(fn: () => void) {
   if (!installed) {
     window.addEventListener("message", onMessage);
+    window.addEventListener("pagehide", onPageHide);
     installed = true;
   }
   listeners.add(fn);
