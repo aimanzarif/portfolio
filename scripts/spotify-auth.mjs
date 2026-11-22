@@ -26,9 +26,9 @@ const url = `https://accounts.spotify.com/authorize?${new URLSearchParams({ resp
 const server = createServer(async (req, res) => {
   const u = new URL(req.url ?? "/", redirect);
   if (u.pathname !== "/callback") return res.writeHead(404).end();
-  if (u.searchParams.get("state") !== state) return res.writeHead(400).end("State mismatch. Start again.");
+  if (u.searchParams.get("state") !== state) return res.writeHead(400, { "Content-Type": "text/plain" }).end("State mismatch. Start again.");
   const code = u.searchParams.get("code");
-  if (!code) return res.writeHead(400).end(`Spotify said: ${u.searchParams.get("error") ?? "no code"}`);
+  if (!code) return res.writeHead(400, { "Content-Type": "text/plain" }).end(`Spotify said: ${u.searchParams.get("error") ?? "no code"}`);
   try {
     const r = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
@@ -44,7 +44,7 @@ const server = createServer(async (req, res) => {
     console.log("\nAdd this line to the server .env (keep it secret):\n");
     console.log(`SPOTIFY_REFRESH_TOKEN=${json.refresh_token}\n`);
   } catch (e) {
-    res.writeHead(500).end("Token exchange failed, see the terminal.");
+    res.writeHead(500, { "Content-Type": "text/plain" }).end("Token exchange failed, see the terminal.");
     console.error("Token exchange failed:", e.message);
   } finally {
     server.close();
