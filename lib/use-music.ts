@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Music } from "@/app/api/music/route";
 
-/* One shared poll of /api/music (30 s, paused while the tab is hidden). */
+/* One shared poll of /api/music (15 s, paused while the tab is hidden). */
 let current: Music | null = null;
 let inflight: Promise<Music | null> | null = null;
 let timer: number | null = null;
@@ -30,7 +30,7 @@ export function useMusic() {
     if (timer === null) {
       timer = window.setInterval(() => {
         if (document.visibilityState === "visible") void loadMusic();
-      }, 30_000);
+      }, 15_000);
     }
     return () => {
       listeners.delete(setMusic);

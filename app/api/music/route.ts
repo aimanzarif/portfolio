@@ -2,7 +2,7 @@ import { getNowPlaying, getPlaylist, PLAYLIST_ID, spotifyEnabled, type NowPlayin
 
 /*
  * What's on the radio, for the mascot room, the terminal (`np`, `playlist`) and the playlist card.
- * Spotify is asked at most every 20 s (now playing) and every hour (playlist), however many visitors.
+ * Spotify is asked at most every 10 s (now playing) and every hour (playlist), however many visitors.
  */
 
 export type Music = {
@@ -12,7 +12,7 @@ export type Music = {
   checkedAt: string;
 };
 
-const NOW_TTL = 20_000;
+const NOW_TTL = 10_000;
 const PLAYLIST_TTL = 60 * 60_000;
 
 let nowCache: { at: number; value: NowPlaying } | null = null;
@@ -55,5 +55,5 @@ export async function GET() {
     playlist: enabled ? await playlist() : PLAYLIST_ID ? { name: "playlist", url: null, id: PLAYLIST_ID, songs: [], total: 0 } : null,
     checkedAt: new Date().toISOString(),
   };
-  return Response.json(body, { headers: { "Cache-Control": "public, max-age=15", "X-Robots-Tag": "noindex" } });
+  return Response.json(body, { headers: { "Cache-Control": "public, max-age=5", "X-Robots-Tag": "noindex" } });
 }
