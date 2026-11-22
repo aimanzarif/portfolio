@@ -36,7 +36,7 @@ export function Playlist() {
       </Reveal>
       <Reveal tilt>
         <article className="overflow-hidden rounded-xl border-2 border-line bg-card">
-          <div className="grid gap-6 p-5 md:grid-cols-[1fr_minmax(0,22rem)]">
+          <div className="grid gap-6 p-5 md:grid-cols-2 md:gap-8">
             {/* track list from the API: fills the same height as the player beside it */}
             <div className="flex min-w-0 flex-col md:h-[352px]">
               <p className="font-mono text-[11px] tracking-wide text-muted-foreground uppercase">
