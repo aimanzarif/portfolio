@@ -38,9 +38,6 @@ const nextConfig: NextConfig = {
   output: "standalone",
   allowedDevOrigins: ["192.168.0.28", "127.0.0.1"],
   poweredByHeader: false,
-  async rewrites() {
-    return [{ source: "/favicon.ico", destination: "/icon.svg" }];
-  },
   async headers() {
     return [
       {
@@ -56,7 +53,8 @@ const nextConfig: NextConfig = {
         headers: [...cache(3600, DAY), { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
       },
       // Icons and link-preview image are generated at build time.
-      { source: "/icon.svg", headers: cache(DAY, 7 * DAY) },
+      { source: "/icon1.svg", headers: cache(DAY, 7 * DAY) },
+      { source: "/icon2.png", headers: cache(DAY, 7 * DAY) },
       { source: "/favicon.ico", headers: cache(DAY, 7 * DAY) },
       { source: "/apple-icon", headers: cache(DAY, 7 * DAY) },
       { source: "/opengraph-image", headers: cache(DAY, 7 * DAY) },

@@ -6,7 +6,7 @@ export const size = {
 };
 export const contentType = "image/png";
 
-/* Same mark as app/icon.svg: a shell prompt with a sage block cursor. iOS rounds the corners itself. */
+/* Same mark as app/icon1.svg (and its PNG/ICO copies, icon2.png and favicon.ico): a shell prompt with a sage block cursor. iOS rounds the corners itself. */
 export default function AppleIcon() {
   return new ImageResponse(
     (
